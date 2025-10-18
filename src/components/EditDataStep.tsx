@@ -337,7 +337,7 @@ const EditDataStep: React.FC<EditDataStepProps> = ({ generatedData, onDataUpdate
               <>
                 {editedData.labReports.length > 0 ? (
                   <Box>
-                    <SectionTitle>Laboratory Reports ({editedData.labReports.length} reports)</SectionTitle>
+                    <SubTitle>Laboratory Reports ({editedData.labReports.length} reports)</SubTitle>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                       {editedData.labReports.map((labData, index) => {
                         const isExpanded = expandedLabReports.has(labData.testType as LabTestType);
@@ -404,9 +404,9 @@ const EditDataStep: React.FC<EditDataStepProps> = ({ generatedData, onDataUpdate
               <>
                 {editedData.visitReports.length > 0 ? (
                   <Box>
-                    <SectionTitle>
+                    <SubTitle>
                       Visit Records ({editedData.visitReports.length} visits)
-                    </SectionTitle>
+                    </SubTitle>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                       {editedData.visitReports.map((visitData, index) => {
                         const isExpanded = expandedVisitReports.has(index);
@@ -513,7 +513,7 @@ const EditDataStep: React.FC<EditDataStepProps> = ({ generatedData, onDataUpdate
 // Patient Info Section Component
 const PatientInfoSection: React.FC<PatientInfoSectionProps> = ({ data, onChange }) => (
   <Box>
-    <SectionTitle>Patient Information</SectionTitle>
+    <SubTitle>Patient Information</SubTitle>
     
     <FormGrid>
       <TextField
@@ -751,8 +751,6 @@ const InsuranceSection: React.FC<InsuranceSectionProps> = ({ data, onChange }) =
 
   return (
     <Box>
-      <SectionTitle>Insurance Information</SectionTitle>
-
       <SubTitle>
         Subscriber Information
       </SubTitle>
@@ -937,7 +935,7 @@ const InsuranceSection: React.FC<InsuranceSectionProps> = ({ data, onChange }) =
 // Provider Section Component
 const ProviderSection: React.FC<ProviderSectionProps> = ({ data, onChange }) => (
   <Box>
-    <SectionTitle>Care Provider Information</SectionTitle>
+    <SubTitle>Care Provider Information</SubTitle>
     
     <FormGrid sx={{ mb: 3 }}>
       <TextField
@@ -1072,7 +1070,7 @@ const ProviderSection: React.FC<ProviderSectionProps> = ({ data, onChange }) => 
 // Medical History Section Component
 const MedicalHistorySection: React.FC<MedicalHistorySectionProps> = ({ data, onChange, expandedSections, onToggleSection }) => (
   <Box>
-    <SectionTitle>Medical History</SectionTitle>
+    <SubTitle>Medical History</SubTitle>
     
     {/* Allergies Accordion */}
     <Accordion 

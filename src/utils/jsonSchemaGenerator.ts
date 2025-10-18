@@ -21,7 +21,7 @@ import {
   LabReportSchema,
   LabReportsSchema,
   InsuranceInfoSchema,
-  ClaimSchema,
+  ClaimInfoSchema,
   W2Schema,
   PassportSchema
 } from './zodSchemas';
@@ -157,7 +157,7 @@ export const ResponseFormats = {
    * CMS-1500 claim information only (without patient, insurance, provider)
    */
   ClaimInfo: zodToOpenAISchema(
-    ClaimSchema,
+    ClaimInfoSchema,
     'ClaimInfoResponse',
     { description: 'CMS-1500 claim information', strict: true }
   ),

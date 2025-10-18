@@ -166,7 +166,7 @@ export const ServiceLineSchema = z.object({
   renderingProviderNPI: z.string().describe('Rendering provider NPI')
 });
 
-export const ClaimSchema = z.object({
+export const ClaimInfoSchema = z.object({
   patientRelationship: z.enum(['self', 'spouse', 'child', 'other']).describe('Patient\'s relationship to subscriber'),
   signatureDate: z.string().describe('Patient signature date'),
   providerSignatureDate: z.string().describe('Provider signature date'),
@@ -239,7 +239,7 @@ export const CMS1500Schema = z.object({
   individual: IndividualSchema,
   insuranceInfo: InsuranceInfoSchema,
   provider: ProviderSchema,
-  claimInfo: ClaimSchema
+  claimInfo: ClaimInfoSchema
 });
 
 export const InsurancePolicySchema = z.object({
@@ -470,7 +470,7 @@ export type InsuranceInfo = z.infer<typeof InsuranceInfoSchema>;
 export type ReferringProvider = z.infer<typeof ReferringProviderSchema>;
 export type Provider = z.infer<typeof ProviderSchema>;
 export type ServiceLine = z.infer<typeof ServiceLineSchema>;
-export type ClaimInfo = z.infer<typeof ClaimSchema>;
+export type ClaimInfo = z.infer<typeof ClaimInfoSchema>;
 export type VisitVitals = z.infer<typeof VisitVitalsSchema>;
 export type VitalSigns = z.infer<typeof VitalSignsSchema>;
 export type VisitNote = z.infer<typeof VisitNoteSchema>;
@@ -519,7 +519,7 @@ export const GeneratedDataSchema = z.object({
   medicalHistory: MedicalHistorySchema,
   visitReports: VisitReportsSchema,
   labReports: LabReportsSchema,
-  cms1500: CMS1500Schema,
+  claimInfo: ClaimInfoSchema,
   w2: W2Schema,
   passport: PassportSchema
 });

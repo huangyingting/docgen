@@ -21,7 +21,7 @@ import {
   IndividualSchema,
   ProviderSchema,
   InsuranceInfoSchema,
-  ClaimSchema,
+  ClaimInfoSchema,
   LabReportSchema,
   VisitReportSchema,
   MedicalHistorySchema,
@@ -30,6 +30,7 @@ import {
   W2Schema,
   Passport,
   PassportSchema,
+  ClaimInfo,
 } from './zodSchemas';
 import { 
   ResponseFormats, 
@@ -440,22 +441,22 @@ Generate realistic insurance information following US healthcare standards.`;
  * @param insuranceInfo Insurance information
  * @param provider Provider object
  * @param cacheConfig Cache configuration
- * @returns CMS1500 object
+ * @returns ClaimInfo object
  */
-export async function generateCMS1500WithAI(
+export async function generateClaimInfoWithAI(
   config: AzureOpenAIConfig,
   individual: Individual,
   insuranceInfo: InsuranceInfo,
   provider: Provider,
   cacheConfig: CacheConfig = DEFAULT_CACHE_CONFIG
-): Promise<CMS1500> {
+): Promise<ClaimInfo> {
   // Generate cache key based on individual ID
-  const cacheKey = generateCacheKey('generateCMS1500', individual.id);
+  const cacheKey = generateCacheKey('generateClaimInfo', individual.id);
   
   // Try to get from cache first
-  const cached = getFromCache<CMS1500>(cacheConfig, cacheKey);
+  const cached = getFromCache<ClaimInfo>(cacheConfig, cacheKey);
   if (cached) {
-    console.log('✨ CMS-1500 data retrieved from cache');
+    console.log('✨ ClaimInfo data retrieved from cache');
     return cached;
   }
 
@@ -496,7 +497,7 @@ Generate realistic, compliant claims data. All data must be completely synthetic
     );
     
     // Validate with Zod schema (validate only the claimInfo part)
-    const validation = validateWithSchema(ClaimSchema, data);
+    const validation = validateWithSchema(ClaimInfoSchema, data);
     
     if (!validation.success) {
       const errors = formatZodErrors(validation.errors);
@@ -505,18 +506,10 @@ Generate realistic, compliant claims data. All data must be completely synthetic
 
     console.log('✅ CMS-1500 claim data validated successfully');
     
-    // Construct the complete CMS1500 object using provided data
-    const cms1500: CMS1500 = {
-      individual,
-      insuranceInfo,
-      provider,
-      claimInfo: validation.data
-    };
-    
     // Save to cache on success
-    saveToCache(cacheConfig, cacheKey, cms1500);
-    
-    return cms1500;
+    saveToCache(cacheConfig, cacheKey, data);
+
+    return data;
   } catch (error) {
     console.error('Failed to generate CMS-1500 data with AI:', error);
     throw new Error(

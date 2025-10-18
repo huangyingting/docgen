@@ -7,12 +7,12 @@
  */
 
 import {
-  generatePatientWithAI,
+  generateIndividualWithAI,
   generateProviderWithAI,
   generateInsuranceInfoWithAI,
-  generateCMS1500WithAI,
+  generateClaimInfoWithAI,
   generateLabReportsWithAI,
-  generateVisitReportWithAI,
+  generateVisitReportsWithAI,
   generateMedicalHistoryWithAI,
 } from '../src/utils/aiDataGenerator';
 
@@ -41,12 +41,12 @@ function testImport(name: string, fn: any) {
 
 console.log('Testing function imports...\n');
 
-testImport('generatePatientWithAI', generatePatientWithAI);
+testImport('generatePatientWithAI', generateIndividualWithAI);
 testImport('generateProviderWithAI', generateProviderWithAI);
 testImport('generateInsuranceInfoWithAI', generateInsuranceInfoWithAI);
-testImport('generateCMS1500WithAI', generateCMS1500WithAI);
+testImport('generateClaimInfoWithAI', generateClaimInfoWithAI);
 testImport('generateLabReportsWithAI', generateLabReportsWithAI);
-testImport('generateVisitReportWithAI', generateVisitReportWithAI);
+testImport('generateVisitReportsWithAI', generateVisitReportsWithAI);
 testImport('generateMedicalHistoryWithAI', generateMedicalHistoryWithAI);
 
 console.log('\n' + '='.repeat(80));

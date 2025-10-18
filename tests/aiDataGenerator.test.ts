@@ -14,16 +14,16 @@ import { config as dotenvConfig } from 'dotenv';
 dotenvConfig();
 
 import {
-  generatePatientWithAI,
+  generateIndividualWithAI,
   generateProviderWithAI,
   generateInsuranceInfoWithAI,
-  generateCMS1500WithAI,
+  generateClaimInfoWithAI,
   generateLabReportsWithAI,
   generateVisitReportsWithAI,
   generateMedicalHistoryWithAI,
   AzureOpenAIConfig,
 } from '../src/utils/aiDataGenerator';
-import { Patient, Provider, Complexity } from '../src/utils/zodSchemas';
+import { Individual, Provider, Complexity } from '../src/utils/zodSchemas';
 import { CacheConfig } from '../src/utils/cache';
 
 // ============================================================================
@@ -113,29 +113,29 @@ async function runTest<T>(
 // ============================================================================
 
 /**
- * Test 1: Generate Patient
+ * Test 1: Generate Individual
  */
-async function testGeneratePatient() {
-  printHeader('Test 1: Generate Patient');
+async function testGenerateIndividual() {
+  printHeader('Test 1: Generate Individual');
 
-  // Test 1a: Basic patient generation
-  const result1 = await runTest('Generate basic patient', async () => {
-    return await generatePatientWithAI(config, cacheConfig);
+  // Test 1a: Basic individual generation
+  const result1 = await runTest('Generate basic individual', async () => {
+    return await generateIndividualWithAI(config, cacheConfig);
   });
 
-  // Test 1b: Second patient generation
-  const result2 = await runTest('Generate another patient', async () => {
-    return await generatePatientWithAI(config, cacheConfig);
+  // Test 1b: Second individual generation
+  const result2 = await runTest('Generate another individual', async () => {
+    return await generateIndividualWithAI(config, cacheConfig);
   });
 
-  // Test 1c: Third patient generation
-  const result3 = await runTest('Generate third patient', async () => {
-    return await generatePatientWithAI(config, cacheConfig);
+  // Test 1c: Third individual generation
+  const result3 = await runTest('Generate third individual', async () => {
+    return await generateIndividualWithAI(config, cacheConfig);
   });
 
   return {
     passed: result1.success && result2.success && result3.success,
-    patient: result1.data, // Return for use in subsequent tests
+    individual: result1.data, // Return for use in subsequent tests
   };
 }
 
@@ -169,22 +169,22 @@ async function testGenerateProvider() {
 /**
  * Test 3: Generate Insurance Information
  */
-async function testGenerateInsurance(patient: Patient) {
+async function testGenerateInsurance(individual: Individual) {
   printHeader('Test 3: Generate Insurance Information');
 
-  if (!patient) {
-    console.log('❌ Skipping insurance test - no patient data available');
+  if (!individual) {
+    console.log('❌ Skipping insurance test - no individual data available');
     return { passed: false };
   }
 
   // Test 3a: Primary insurance only
   const result1 = await runTest('Generate primary insurance only', async () => {
-    return await generateInsuranceInfoWithAI(config, patient, false, cacheConfig);
+    return await generateInsuranceInfoWithAI(config, individual, false, cacheConfig);
   });
 
   // Test 3b: Primary and secondary insurance
   const result2 = await runTest('Generate primary and secondary insurance', async () => {
-    return await generateInsuranceInfoWithAI(config, patient, true, cacheConfig);
+    return await generateInsuranceInfoWithAI(config, individual, true, cacheConfig);
   });
 
   return {
@@ -197,21 +197,21 @@ async function testGenerateInsurance(patient: Patient) {
  * Test 4: Generate CMS-1500 Form
  */
 async function testGenerateCMS1500(
-  patient: Patient,
+  individual: Individual,
   insurance: any,
   provider: Provider
 ) {
   printHeader('Test 4: Generate CMS-1500 Form');
 
-  if (!patient || !insurance || !provider) {
+  if (!individual || !insurance || !provider) {
     console.log('❌ Skipping CMS-1500 test - missing prerequisite data');
     return { passed: false };
   }
 
   const result = await runTest('Generate CMS-1500 claim form', async () => {
-    return await generateCMS1500WithAI(
+    return await generateClaimInfoWithAI(
       config,
-      patient,
+      individual,
       insurance,
       provider,
       cacheConfig
@@ -224,10 +224,10 @@ async function testGenerateCMS1500(
 /**
  * Test 5: Generate Laboratory Reports
  */
-async function testGenerateLabReports(patient: Patient, provider: Provider) {
+async function testGenerateLabReports(individual: Individual, provider: Provider) {
   printHeader('Test 5: Generate Laboratory Reports');
 
-  if (!patient || !provider) {
+  if (!individual || !provider) {
     console.log('❌ Skipping lab reports test - missing prerequisite data');
     return { passed: false };
   }
@@ -270,10 +270,10 @@ async function testGenerateLabReports(patient: Patient, provider: Provider) {
 /**
  * Test 6: Generate Visit Report
  */
-async function testGenerateVisitReport(patient: Patient, provider: Provider) {
+async function testGenerateVisitReport(individual: Individual, provider: Provider) {
   printHeader('Test 6: Generate Visit Report');
 
-  if (!patient || !provider) {
+  if (!individual || !provider) {
     console.log('❌ Skipping visit report test - missing prerequisite data');
     return { passed: false };
   }
@@ -304,11 +304,11 @@ async function testGenerateVisitReport(patient: Patient, provider: Provider) {
 /**
  * Test 7: Generate Medical History
  */
-async function testGenerateMedicalHistory(patient: Patient) {
+async function testGenerateMedicalHistory(individual: Individual) {
   printHeader('Test 7: Generate Medical History');
 
-  if (!patient) {
-    console.log('❌ Skipping medical history test - no patient data available');
+  if (!individual) {
+    console.log('❌ Skipping medical history test - no individual data available');
     return { passed: false };
   }
 
@@ -353,10 +353,10 @@ async function testCompleteIntegration() {
   console.log('Generating a complete medical record with all components...\n');
 
   try {
-    // Step 1: Generate Patient
-    console.log('Step 1/7: Generating patient...');
-    const patient = await generatePatientWithAI(config, cacheConfig);
-    console.log(`✅ Patient: ${patient.name}`);
+    // Step 1: Generate Individual
+    console.log('Step 1/7: Generating individual...');
+    const individual = await generateIndividualWithAI(config, cacheConfig);
+    console.log(`✅ Individual: ${individual.name}`);
 
     // Step 2: Generate Provider
     console.log('\nStep 2/7: Generating provider...');
@@ -365,7 +365,7 @@ async function testCompleteIntegration() {
 
     // Step 3: Generate Insurance
     console.log('\nStep 3/7: Generating insurance...');
-    const insurance = await generateInsuranceInfoWithAI(config, patient, true, cacheConfig);
+    const insurance = await generateInsuranceInfoWithAI(config, individual, true, cacheConfig);
     console.log(`✅ Insurance: ${insurance.primaryInsurance.provider}`);
 
     // Step 4: Generate Medical History
@@ -388,10 +388,10 @@ async function testCompleteIntegration() {
     );
     console.log(`✅ Lab Reports: Generated ${labReports.length} reports`);
 
-    // Step 7: Generate CMS-1500
-    console.log('\nStep 7/7: Generating CMS-1500...');
-    const cms1500 = await generateCMS1500WithAI(config, patient, insurance, provider, cacheConfig);
-    console.log(`✅ CMS-1500: ${cms1500.claimInfo.serviceLines.length} service lines`);
+    // Step 7: Generate Claim Information
+    console.log('\nStep 7/7: Generating Claim Information...');
+    const claimInfo = await generateClaimInfoWithAI(config, individual, insurance, provider, cacheConfig);
+    console.log(`✅ Claim Information: ${claimInfo.serviceLines.length} service lines`);
 
     console.log('\n' + '='.repeat(80));
     console.log('✅ Complete medical record generated successfully!');
@@ -430,48 +430,48 @@ async function runAllTests() {
   const results: { [key: string]: boolean } = {};
 
   // Run tests sequentially to reuse generated data
-  let patient: Patient | undefined;
+  let individual: Individual | undefined;
   let provider: Provider | undefined;
   let insurance: any;
 
-  // Test 1: Patient Generation
-  const test1 = await testGeneratePatient();
-  results['Patient Generation'] = test1.passed;
-  patient = test1.patient;
+  // Test 1: Individual Generation
+  const test1 = await testGenerateIndividual();
+  results['Individual Generation'] = test1.passed;
+  individual = test1.individual;
 
   // Test 2: Provider Generation
   const test2 = await testGenerateProvider();
   results['Provider Generation'] = test2.passed;
   provider = test2.provider;
 
-  // Test 3: Insurance Information (requires patient)
-  if (patient) {
-    const test3 = await testGenerateInsurance(patient);
+  // Test 3: Insurance Information (requires individual)
+  if (individual) {
+    const test3 = await testGenerateInsurance(individual);
     results['Insurance Information'] = test3.passed;
     insurance = test3.insurance;
   }
 
-  // Test 4: CMS-1500 Form (requires patient, insurance, provider)
-  if (patient && insurance && provider) {
-    const test4 = await testGenerateCMS1500(patient, insurance, provider);
+  // Test 4: CMS-1500 Form (requires individual, insurance, provider)
+  if (individual && insurance && provider) {
+    const test4 = await testGenerateCMS1500(individual, insurance, provider);
     results['CMS-1500 Form'] = test4.passed;
   }
 
-  // Test 5: Laboratory Reports (requires patient, provider)
-  if (patient && provider) {
-    const test5 = await testGenerateLabReports(patient, provider);
+  // Test 5: Laboratory Reports (requires individual, provider)
+  if (individual && provider) {
+    const test5 = await testGenerateLabReports(individual, provider);
     results['Laboratory Reports'] = test5.passed;
   }
 
-  // Test 6: Visit Report (requires patient, provider)
-  if (patient && provider) {
-    const test6 = await testGenerateVisitReport(patient, provider);
+  // Test 6: Visit Report (requires individual, provider)
+  if (individual && provider) {
+    const test6 = await testGenerateVisitReport(individual, provider);
     results['Visit Report'] = test6.passed;
   }
 
-  // Test 7: Medical History (requires patient)
-  if (patient) {
-    const test7 = await testGenerateMedicalHistory(patient);
+  // Test 7: Medical History (requires individual)
+  if (individual) {
+    const test7 = await testGenerateMedicalHistory(individual);
     results['Medical History'] = test7.passed;
   }
 

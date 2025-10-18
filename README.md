@@ -179,7 +179,7 @@ AI-powered medical data generation using Azure OpenAI:
 - **`generateMedicalHistoryWithAI(config, patient, complexity, cache?)`** - Generate medical history
 - **`generateVisitReportsWithAI(config, patient, provider, numVisits, complexity, cache?)`** - Generate visit notes
 - **`generateLabReportsWithAI(config, patient, numTests, complexity, cache?)`** - Generate lab reports
-- **`generateCMS1500WithAI(config, patient, provider, insurance, complexity, cache?)`** - Generate CMS-1500 claim form
+- **`generateClaimInfoWithAI(config, patient, provider, insurance, complexity, cache?)`** - Generate CMS-1500 claim form
 
 ### Data Generator (`src/utils/dataGenerator.ts`)
 

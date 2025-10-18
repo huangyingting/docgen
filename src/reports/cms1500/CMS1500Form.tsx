@@ -1,18 +1,17 @@
 import React from 'react';
 import './CMS1500Form.css';
-import { CMS1500 } from '../../utils/zodSchemas';
+import { Individual, Provider, InsuranceInfo, ClaimInfo } from '../../utils/zodSchemas';
 
 interface CMS1500FormProps {
-  data: CMS1500;
+  individual: Individual,
+  insuranceInfo: InsuranceInfo,
+  provider: Provider,
+  claimInfo: ClaimInfo,
   fontFamily?: string;
 }
 
-const CMS1500Form: React.FC<CMS1500FormProps> = ({ data, fontFamily = "'Arial', sans-serif" }) => {
-  const { individual, insuranceInfo, provider, claimInfo } = data;
+const CMS1500Form: React.FC<CMS1500FormProps> = ({ individual, insuranceInfo, provider, claimInfo, fontFamily = "'Arial', sans-serif" }) => {
 
-  {
-    console.log('Rendering CMS1500Form with data:', data);
-  }
   return (
     <div
       className="cms1500-report"

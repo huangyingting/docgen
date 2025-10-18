@@ -225,7 +225,10 @@ function App() {
     if (activeReportType === 'cms1500') {
       return (
         <CMS1500Form
-          data={generatedData.cms1500}
+          individual={generatedData.individual}
+          insuranceInfo={generatedData.insuranceInfo}
+          provider={generatedData.provider}
+          claimInfo={generatedData.claimInfo}
           fontFamily={fontFamilyStyle}
         />
       );
@@ -555,7 +558,10 @@ function App() {
                 fontFamily={fontFamilies.find(f => f.value === fontFamily)?.css || "'Arial', sans-serif"}
               />
               <CMS1500Form
-                data={generatedData.cms1500}
+                individual={generatedData.individual}
+                provider={generatedData.provider}
+                insuranceInfo={generatedData.insuranceInfo}
+                claimInfo={generatedData.claimInfo}
                 fontFamily={fontFamilies.find(f => f.value === fontFamily)?.css || "'Arial', sans-serif"}
               />
               <InsurancePolicyDocument

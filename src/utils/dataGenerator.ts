@@ -822,9 +822,9 @@ export const generateServiceLine = (
  * Creates chronologically consistent dates and diagnosis codes
  */
 export const generateClaimInfo = (
-  patientName: string,
-  subscriberName: string,
-  npi?: string
+  individual: Individual,
+  insuranceInfo: InsuranceInfo,
+  provider: Provider
 ): ClaimInfo => {
   // Generate dates in logical chronological order
   // 1. Date of illness (earliest, 15-45 days ago)
@@ -893,7 +893,7 @@ export const generateClaimInfo = (
     patientRelationship: (() => {
       // Determine if patient is the subscriber      
       // If names match, patient is self; otherwise randomly select relationship
-      return subscriberName === patientName
+      return insuranceInfo.subscriberName === `${individual.firstName} ${individual.lastName}`
         ? 'self' as const
         : faker.helpers.arrayElement(['spouse', 'child', 'other'] as const);
     })(),
@@ -931,7 +931,7 @@ export const generateClaimInfo = (
 
   // Now generate service lines using the actual diagnosis codes from the claim
   result.serviceLines = (() => {
-    const serviceProviderNPI = npi || faker.string.numeric(10);
+    const serviceProviderNPI = provider.npi || faker.string.numeric(10);
     const numServices = faker.number.int({ min: 1, max: 4 });
 
     // Map diagnosis codes to appropriate CPT codes
@@ -1997,22 +1997,6 @@ function calculateBMI(weight: number, height: string): string {
   const bmi = (weight / (heightInInches * heightInInches)) * 703;
   return bmi.toFixed(1);
 }
-
-export const generateCMS1500 = (individual: Individual, insuranceInfo: InsuranceInfo, provider: Provider): CMS1500 => {
-
-  const result: CMS1500 = {
-    individual: individual,
-    insuranceInfo: insuranceInfo,
-    provider: provider,
-    claimInfo: generateClaimInfo(
-      `${individual.firstName} ${individual.lastName}`,
-      insuranceInfo.subscriberName,
-      provider.npi
-    )
-  };
-
-  return result;
-};
 
 export const generateW2 = (_individual: Individual): W2 => {
   const currentYear = new Date().getFullYear();

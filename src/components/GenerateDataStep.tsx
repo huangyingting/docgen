@@ -34,7 +34,7 @@ import {
   generateMedicalHistory,
   generateVisitsReport,
   generateLabReports,
-  generateCMS1500,
+  generateClaimInfo,
   generateW2,
   generatePassport
 } from '../utils/dataGenerator';
@@ -46,7 +46,7 @@ import {
   generateMedicalHistoryWithAI,
   generateVisitReportsWithAI,
   generateLabReportsWithAI,
-  generateCMS1500WithAI,
+  generateClaimInfoWithAI,
   generateW2WithAI,
   generatePassportWithAI
 } from '../utils/aiDataGenerator';
@@ -126,9 +126,9 @@ const GenerateDataStep: React.FC<GenerateDataStepProps> = ({ onDataGenerated, on
         const shuffled = [...availableLabTests].sort(() => Math.random() - 0.5);
         const selectedLabTests = shuffled.slice(0, customOptions.numberOfLabTests);
         const labReports = await generateLabReportsWithAI(azureConfig, selectedLabTests, provider.name);
-        
-        const cms1500 = await generateCMS1500WithAI(azureConfig, individual, insuranceInfo, provider);
-        
+
+        const claimInfo = await generateClaimInfoWithAI(azureConfig, individual, insuranceInfo, provider);
+
         // Generate W-2 with AI (employer info is now part of individual)
         const w2 = await generateW2WithAI(azureConfig, individual);
         
@@ -142,7 +142,7 @@ const GenerateDataStep: React.FC<GenerateDataStepProps> = ({ onDataGenerated, on
           medicalHistory,
           visitReports,
           labReports,
-          cms1500,
+          claimInfo,
           w2,
           passport
         };
@@ -166,9 +166,9 @@ const GenerateDataStep: React.FC<GenerateDataStepProps> = ({ onDataGenerated, on
         const shuffled = [...availableLabTests].sort(() => Math.random() - 0.5);
         const selectedLabTests = shuffled.slice(0, customOptions.numberOfLabTests);
         const labReports = generateLabReports(selectedLabTests, provider.name);
-        
-        const cms1500 = generateCMS1500(individual, insuranceInfo, provider);
-        
+
+        const claimInfo = generateClaimInfo(individual, insuranceInfo, provider);
+
         // Generate W-2 (employer info is now part of individual)
         const w2 = generateW2(individual);
         
@@ -182,7 +182,7 @@ const GenerateDataStep: React.FC<GenerateDataStepProps> = ({ onDataGenerated, on
           medicalHistory,
           visitReports,
           labReports,
-          cms1500,
+          claimInfo,
           w2,
           passport
         };

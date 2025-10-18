@@ -3,18 +3,16 @@ import './InsurancePolicyDocument.css';
 import { Individual, InsuranceInfo } from '../../utils/zodSchemas';
 
 interface InsurancePolicyDocumentProps {
-  data: {
-    individual: Individual;
-    insuranceInfo: InsuranceInfo;
-  };
+  individual: Individual;
+  insuranceInfo: InsuranceInfo;
   fontFamily?: string;
 }
 
 const InsurancePolicyDocument: React.FC<InsurancePolicyDocumentProps> = ({
-  data,
+  individual,
+  insuranceInfo,
   fontFamily = "'Arial', sans-serif"
 }) => {
-  const { individual, insuranceInfo } = data;
   const currentDate = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',

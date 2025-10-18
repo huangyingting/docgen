@@ -30,7 +30,6 @@ import LaboratoryReportDocument from './reports/labReport/LabReportDocument';
 import PassportDocument from './reports/passport/PassportDocument';
 import W2Form from './reports/w2/W2Form';
 import {
-  InsurancePolicy,
   VisitReport,
   LabReport,
   LabTestType,
@@ -235,13 +234,10 @@ function App() {
     }
 
     if (activeReportType === 'insurancePolicy') {
-      const insurancePolicy: InsurancePolicy = {
-        individual: generatedData.individual,
-        insuranceInfo: generatedData.insuranceInfo
-      };
       return (
         <InsurancePolicyDocument
-          data={insurancePolicy}
+          individual={generatedData.individual}
+          insuranceInfo={generatedData.insuranceInfo}
           fontFamily={fontFamilyStyle}
         />
       );
@@ -565,10 +561,8 @@ function App() {
                 fontFamily={fontFamilies.find(f => f.value === fontFamily)?.css || "'Arial', sans-serif"}
               />
               <InsurancePolicyDocument
-                data={{
-                  individual: generatedData.individual,
-                  insuranceInfo: generatedData.insuranceInfo
-                }}
+                individual={generatedData.individual}
+                insuranceInfo={generatedData.insuranceInfo}
                 fontFamily={fontFamilies.find(f => f.value === fontFamily)?.css || "'Arial', sans-serif"}
               />
               {generatedData.visitReports.map((visitData: VisitReport, index: number) => (

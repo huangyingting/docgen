@@ -242,10 +242,6 @@ export const CMS1500Schema = z.object({
   claimInfo: ClaimInfoSchema
 });
 
-export const InsurancePolicySchema = z.object({
-  individual: IndividualSchema,
-  insuranceInfo: InsuranceInfoSchema
-});
 
 export const VisitReportSchema = z.object({
   visit: VisitNoteSchema,
@@ -479,7 +475,6 @@ export type Subscriber = z.infer<typeof SubscriberSchema>;
 
 // Composite Document types
 export type CMS1500 = z.infer<typeof CMS1500Schema>;
-export type InsurancePolicy = z.infer<typeof InsurancePolicySchema>;
 export type VisitReport = z.infer<typeof VisitReportSchema>;
 export type VisitReports = z.infer<typeof VisitReportsSchema>;
 export type W2 = z.infer<typeof W2Schema>;

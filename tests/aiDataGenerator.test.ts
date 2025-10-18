@@ -196,7 +196,7 @@ async function testGenerateInsurance(individual: Individual) {
 /**
  * Test 4: Generate CMS-1500 Form
  */
-async function testGenerateCMS1500(
+async function testGenerateClaimInfo(
   individual: Individual,
   insurance: any,
   provider: Provider
@@ -453,7 +453,7 @@ async function runAllTests() {
 
   // Test 4: CMS-1500 Form (requires individual, insurance, provider)
   if (individual && insurance && provider) {
-    const test4 = await testGenerateCMS1500(individual, insurance, provider);
+    const test4 = await testGenerateClaimInfo(individual, insurance, provider);
     results['CMS-1500 Form'] = test4.passed;
   }
 

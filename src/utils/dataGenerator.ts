@@ -1680,25 +1680,6 @@ export const generateFamilyHistory = (relation: string = ''): FamilyHistory => {
 };
 
 /**
- * Generate a current medication
- */
-export const generateCurrentMedication = (purpose?: string): CurrentMedication => {
-  const med = purpose
-    ? faker.helpers.arrayElement(GENERAL_MEDICATIONS)
-    : faker.helpers.arrayElement(GENERAL_MEDICATIONS);
-
-  return {
-    name: med.name,
-    strength: med.strength,
-    dosage: med.dosage,
-    purpose: purpose || med.purpose,
-    prescribedBy: `Dr. ${faker.person.firstName()} ${faker.person.lastName()}`,
-    startDate: faker.date.past({ years: 1 }).toLocaleDateString('en-US'),
-    instructions: faker.helpers.arrayElement(MEDICATION_INSTRUCTIONS)
-  };
-};
-
-/**
  * Generate a discontinued medication
  */
 export const generateDiscontinuedMedication = (): DiscontinuedMedication => {

@@ -18,10 +18,9 @@ const LabReportsPage: React.FC<LabReportsPageProps> = ({
 
   // Facility information with fallbacks
   const facilityName = provider?.facilityName || 'Metropolitan General Hospital';
-  const facilityAddress = provider?.facilityAddress;
   const facilityPhone = provider?.facilityPhone || '(555) 123-4567';
-  const facilityAddressLine = facilityAddress
-    ? `${facilityAddress.street}, ${facilityAddress.city}, ${facilityAddress.state} ${facilityAddress.zipCode}`
+  const facilityAddressLine = provider?.facilityAddress
+    ? `${provider.facilityAddress.street}, ${provider.facilityAddress.city}, ${provider.facilityAddress.state} ${provider.facilityAddress.zipCode}`
     : '123 Medical Center Drive, Healthcare City, HC 12345';
 
   const renderVitalSigns = () => {

@@ -264,7 +264,6 @@ const EditDataStep: React.FC<EditDataStepProps> = ({ generatedData, onDataUpdate
             onChange={(_, newValue) => setActiveSection(newValue)}
             variant="scrollable"
             scrollButtons="auto"
-            centered
             sx={styles.customTabs}
           >
             {sections.map(section => (

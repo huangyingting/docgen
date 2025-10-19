@@ -280,8 +280,8 @@ const LabReportsPage: React.FC<LabReportsPageProps> = ({
           <div className="page-break"></div>
         </div>
       )}
-      {labReports && labReports.map((labReport) => (
-        <div>
+      {labReports && labReports.map((labReport, index) => (
+        <div key={`${labReport.testName}-${labReport.reportDate}-${index}`}>
           {renderPage(renderLabReport(labReport), getNextChar())}
           <div className="page-break"></div>
         </div>

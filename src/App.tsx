@@ -594,6 +594,11 @@ function App() {
                   fontFamily={fontFamilies.find(f => f.value === fontFamily)?.css || "'Arial', sans-serif"}
                 />
               ))}
+              <W2Form
+                individual={generatedData.individual}
+                w2={generatedData.w2}
+                fontFamily={fontFamilies.find(f => f.value === fontFamily)?.css || "'Arial', sans-serif"}
+              />
             </>
           )}
         </Box>

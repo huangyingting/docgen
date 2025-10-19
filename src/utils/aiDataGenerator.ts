@@ -205,16 +205,31 @@ export async function generateIndividualWithAI(
   const prompt = `Generate complete patient demographics for a synthetic medical record.
 
 **Requirements:**
-- Complete demographics with realistic US address, contact info
-- Medical Record Number (MRN), Social Security Number (SSN format: XXX-XX-XXXX)
-- Account number
-- Age
-- Gender, randomly selected from Male, Female and Other
-- All dates in MM/DD/YYYY format
-- Pharmacy information with name, address, and phone
-- All data must be completely synthetic and HIPAA-compliant
+- Complete demographics:
+  - First name, last name, middle initial (nullable)
+  - Medical Record Number (MRN)
+  - Date of Birth in MM/DD/YYYY format
+  - Age (integer)
+  - Gender: Male, Female, or Other
+- Contact Information:
+  - Phone in format (XXX) XXX-XXXX
+  - Email address (valid format)
+  - Emergency contact name and phone
+- Address (US format):
+  - Street, city, state (2-letter code), ZIP code, country
+- Insurance/Account Information:
+  - Social Security Number (XXX-XX-XXXX format)
+  - Account number
+- Pharmacy Information:
+  - Name, address, phone
+- Employment Information:
+  - Company/Employer name
+  - Employer Identification Number (EIN) in XX-XXXXXXX format
+  - Employer address (street, city, state, ZIP)
+  - Industry/business type
+  - Employer phone (optional)
 
-Generate realistic, clinically coherent data following US healthcare standards.`;
+Generate realistic, clinically coherent data following US healthcare standards. All data must be completely synthetic and HIPAA-compliant.`;
 
   const systemPrompt = 'You are an expert medical data generator creating synthetic, realistic patient demographics for educational purposes. Generate completely fictional yet realistic data.';
 
@@ -279,21 +294,29 @@ export async function generateProviderWithAI(
   const prompt = `Generate complete provider and facility information for a medical practice.
 
 **Requirements:**
-- Provider: Full name with credentials (Dr. First Last, MD)
-- National Provider Identifier (NPI): 10 digits
-- Medical specialty, choose appropriate specialty
-- Provider phone, address (US format)
-- Tax ID (EIN or SSN format) with type
-- Provider signature (provider's name)
-- Facility information:
+- Provider Information:
+  - Full name with credentials (e.g., Dr. John Smith, MD)
+  - National Provider Identifier (NPI): exactly 10 digits
+  - Medical specialty (realistic specialty name)
+  - Provider phone: (XXX) XXX-XXXX format
+  - Provider address: street, city, state (2-letter), ZIP code
+  - Tax ID: valid format for type (SSN: XXX-XX-XXXX or EIN: XX-XXXXXXX)
+  - Tax ID Type: "SSN" or "EIN"
+  - Signature: provider name (can be null)
+- Facility Information:
   - Facility name
-  - Facility address (US format)
-  - Facility phone and fax numbers
-  - Facility NPI (10 digits)
-- Billing provider information
-- All data must be completely synthetic
+  - Facility address: street, city, state (2-letter), ZIP code
+  - Facility phone: (XXX) XXX-XXXX format
+  - Facility fax: (XXX) XXX-XXXX format
+  - Facility NPI: exactly 10 digits
+- Billing Provider Information:
+  - Billing name
+  - Billing address: street address (e.g., "123 Main St, Suite 100")
+  - Billing phone: (XXX) XXX-XXXX format
+  - Billing NPI: exactly 10 digits
+- Referring Provider (optional): name, qualifier code (DN/DK/DQ), NPI (10 digits)
 
-Generate realistic, professional provider and facility data.`;
+Generate realistic, professional provider and facility data following healthcare standards.`;
 
   const systemPrompt = 'You are an expert medical data generator creating synthetic provider and facility information for educational purposes. Generate completely fictional yet realistic data.';
 
@@ -368,24 +391,30 @@ export async function generateInsuranceInfoWithAI(
 - Phone: ${individual.contact.phone}
 
 **Requirements:**
-- Primary insurance (required):
-  - Provider name (major US insurer)
+- Primary Insurance (required):
+  - Provider name (major US insurer like UnitedHealth, Aetna, BlueCross, Cigna, etc.)
   - Policy number
-  - Group number
-  - Member ID
-  - Effective date (current year)
-  - Copay and deductible amounts
-${includeSecondary ? '- Secondary insurance with similar details and different provider' : '- No secondary insurance (set to null)'}
-- Subscriber information:
+  - Group number (can be null)
+  - Member ID (can be null)
+  - Effective date (YYYY-MM-DD format, current year)
+  - Copay amount (e.g., "$20", can be null)
+  - Deductible amount (e.g., "$1000", can be null)
+${includeSecondary ? '- Secondary Insurance (required):\n  - Different provider from primary\n  - Similar structure to primary insurance' : '- Secondary Insurance: null (not included)'}
+- Insurance Type: Medicare, Medicaid, TRICARE, CHAMPVA, Group, FECA, or Other
+- PICA Code: null or specific code if applicable
+- Subscriber Information:
   ${useIndividualAsSubscriber 
-    ? '- IMPORTANT: Use the EXACT individual information above for subscriber (name, DOB, gender, address, phone)'
-    : '- Generate DIFFERENT subscriber information (different person from individual)'}
-- Insurance type (e.g., HMO, PPO, Medicare)
-- All data must be completely synthetic
+    ? '- IMPORTANT: Use EXACT individual information above for subscriber (name, DOB, gender, address, phone)'
+    : '- Generate DIFFERENT subscriber (different person from individual)'}
+  - Subscriber first name, last name
+  - Subscriber date of birth (MM/DD/YYYY format)
+  - Subscriber gender
+  - Subscriber phone: (XXX) XXX-XXXX format
+  - Subscriber address: street, city, state (2-letter), ZIP code
+- Secondary Insured Information (nullable):
+  - If applicable, include first name, last name, policy number, plan name
 
-Generate realistic insurance information following US healthcare standards.`;
-
-  const systemPrompt = 'You are an expert medical data generator creating synthetic insurance information for educational purposes. Generate completely fictional yet realistic data.';
+Generate realistic insurance information following US healthcare standards. All data must be completely synthetic.`;  const systemPrompt = 'You are an expert medical data generator creating synthetic insurance information for educational purposes. Generate completely fictional yet realistic data.';
 
   try {
     const data = await generateDataWithAI(
@@ -467,21 +496,41 @@ DOB: ${individual.dateOfBirth}
 Insurance: ${insuranceInfo.primaryInsurance.provider}
 Provider: ${provider.name}
 
-Generate comprehensive service lines (2-5 services) with:
-- Date of service (within last 90 days)
-- Place of service code (appropriate for service type)
-- Procedure codes (CPT codes like 99213, 99214, 85025, etc.)
-- Diagnosis pointers (linking to conditions)
-- Charges (realistic amounts)
-- Units and modifiers
+**Service Lines (generate 2-5 services):**
+For each service line include:
+- Service date from and to (MM/DD/YYYY format)
+- Place of service code (e.g., 11=office, 21=inpatient hospital, 23=emergency room)
+- Emergency indicator (Y/N)
+- Procedure code (CPT code like 99213, 99214, 85025, etc.)
+- Modifier (if applicable, e.g., 25, 59)
+- Diagnosis pointer (A, B, C, D)
+- Charges (realistic dollar amount as string, e.g., "150.00")
+- Units (typically 1)
+- EPSDT indicator (Y/N)
+- ID Qualifier
+- Rendering provider NPI
 
-Include claim information with:
-- Patient relationship to subscriber
-- Signature date
-- Illness/injury date (if applicable)
-- Diagnosis codes (ICD-10)
-- Prior authorization number (if applicable)
-- Total charges
+**Claim Information:**
+- Patient relationship to subscriber: self, spouse, child, or other
+- Signature date (MM/DD/YYYY)
+- Provider signature date (MM/DD/YYYY)
+- Date of current illness/injury (MM/DD/YYYY, or leave blank)
+- Service date (MM/DD/YYYY)
+- Illness qualifier code (if applicable)
+- Unable to work from/to dates (if applicable, MM/DD/YYYY)
+- Hospitalization from/to dates (if applicable, MM/DD/YYYY)
+- Additional info (relevant claim information)
+- Outside lab used: true/false
+- Outside lab charges: dollar amount (string) or null
+- Diagnosis codes: ICD-10 format (e.g., E11.9, I10, J06.9)
+- Resubmission code: null or code
+- Original reference number: null or number
+- Prior authorization number: null or number
+- Has other health plan: true/false
+- Other claim ID: claim identifier
+- Accept assignment: true/false
+- Total charges: sum of service line charges
+- Amount paid: amount already paid (usually "0.00" for new claims)
 
 Generate realistic, compliant claims data. All data must be completely synthetic.`;
 
@@ -573,22 +622,42 @@ export async function generateLabReportsWithAI(
 
     // Generate prompt for this specific test type
     const testDetail = testTypeDetails[testType] || testType;
-    const prompt = `Generate a realistic laboratory test result:
+    const prompt = `Generate a realistic laboratory test result for a ${testType} test:
 
 Ordering Physician: ${orderingPhysician}
+Test Type: ${testType}
+Test Description: ${testDetail}
 
-Generate a ${testType} laboratory report: ${testDetail}
+**Required Fields:**
+- testType: "${testType}" (exact match)
+- testName: Full name of the test (e.g., "Complete Blood Count")
+- specimenType: Type of specimen (e.g., Blood, Urine, Serum, Plasma)
+- specimenCollectionDate: Collection date (YYYY-MM-DD format)
+- specimenCollectionTime: Collection time (HH:MM format, 24-hour)
+- specimenReceivedDate: Date received by lab (YYYY-MM-DD format)
+- reportDate: Report generation date (YYYY-MM-DD format)
+- reportTime: Report generation time (HH:MM format, 24-hour)
+- orderingPhysician: "${orderingPhysician}"
+- performingLab:
+  - name: Laboratory facility name
+  - address: street, city, state, ZIP code, country
+  - phone: (XXX) XXX-XXXX format
+  - cliaNumber: CLIA certification number
+  - director: Lab director name
+- results: Array of test results, each with:
+  - parameter: Test parameter name (e.g., "WBC", "Hemoglobin")
+  - value: Numerical result value
+  - unit: Unit of measurement (e.g., "K/mcL", "g/dL")
+  - referenceRange: Normal range (e.g., "4.5-11.0")
+  - flag: "Normal", "High", "Low", "Critical", "Abnormal", or empty string
+  - notes: Additional notes (or null)
+- interpretation: Clinical interpretation (string or null)
+- comments: Additional comments (or null)
+- criticalValues: Array of critical values (or null)
+- technologist: Technologist name (or null)
+- pathologist: Pathologist name (or null)
 
-Include:
-- Test name and type
-- Date of collection and reporting (within last 30 days)
-- Specimen type and collection method
-- Individual test results with values, units, and reference ranges
-- Flags for abnormal values (High/Low)
-- Performing laboratory information
-- Ordering provider
-
-Make results clinically coherent with patient age and realistic for the test type.`;
+Make results clinically coherent and realistic for the test type.`;
 
     const systemPrompt = 'You are a clinical laboratory specialist. Generate realistic, clinically accurate laboratory test results. Always respond with ONLY valid JSON.';
 
@@ -671,20 +740,30 @@ Provider: ${providerName}
 Visit Number: ${visitIndex + 1} of ${numberOfVisits}
 Visit Date: approximately ${daysAgo} days ago
 
-Include:
-- Visit date and time
-- Visit type (Office Visit, Follow-up, Annual Physical, etc.)
-- Chief complaint (realistic and age-appropriate)
-- History of present illness
-- Vital signs (BP, HR, Temp, RR, O2 Sat, Height, Weight, BMI)
-- Physical examination findings
-- Assessment and diagnosis
-- Treatment plan
-- Follow-up instructions
-- Medications prescribed or refilled
-- Visit duration
+**Visit Information:**
+- date: Visit date in MM/DD/YYYY format (approximately ${daysAgo} days ago)
+- type: Visit type (Office Visit, Follow-up, Annual Physical, Consultation, etc.)
+- provider: "${providerName}"
+- duration: Duration (e.g., "30 minutes", "45 minutes")
+- chiefComplaint: Chief complaint (realistic and age-appropriate)
 
-Make the visit clinically coherent. All data must be completely synthetic.`;
+**Vital Signs (required):**
+- date: Date in MM/DD/YYYY format
+- time: Time in HH:MM format (24-hour)
+- bloodPressure: Format "XXX/XX" (e.g., "120/80")
+- heartRate: String with "bpm" (e.g., "72 bpm")
+- temperature: String with unit (e.g., "98.6°F")
+- weight: String with unit (e.g., "180 lbs")
+- height: String format like "5'10\"" or inches (e.g., "70 inches")
+- bmi: Calculate BMI and format as string (e.g., "25.8")
+- oxygenSaturation: String with % (e.g., "98%")
+- respiratoryRate: String per minute (e.g., "16")
+
+**Visit Details (required):**
+- assessment: Array of diagnosis/assessment items (array of strings)
+- plan: Array of treatment plan items (array of strings)
+
+Make the visit clinically coherent with all vital signs filled out completely. All data must be completely synthetic.`;
 
     const systemPrompt = 'You are an experienced physician creating synthetic medical visit documentation for educational purposes. Generate realistic, clinically accurate visit reports.';
 
@@ -752,26 +831,38 @@ export async function generateMedicalHistoryWithAI(
   const complexityDetails = {
     low: '1-2 chronic conditions, 2-3 current medications, 1 allergy, minimal history',
     medium: '2-4 chronic conditions, 4-6 current medications, 2-3 allergies, moderate history',
-    high: '4+ chronic conditions, 7+ current medications, 3+ allergies, extensive history'
+    high: '4+ chronic conditions, 7+ medications, 3+ allergies, extensive history'
   };
 
   const prompt = `Generate a comprehensive medical history for a patient:
 
 **Complexity Level: ${complexity}** (${complexityDetails[complexity]})
 
-Include:
-- Current medications (with dosages, frequencies, start dates)
-- Discontinued medications (with reasons)
-- Chronic conditions (with diagnosis dates, status)
-- Allergies (allergen, reaction, severity)
-- Surgical history (procedures with dates)
-- Family history (relatives, conditions, ages)
-- Social history (smoking, alcohol, exercise, occupation)
-- Immunizations (vaccines with dates)
+**Medications:**
+- Current medications (array):
+  - name, strength (e.g., "10mg"), dosage instructions (e.g., "Take 1 tablet twice daily")
+  - purpose/indication, prescribing provider, start date (MM/DD/YYYY), special instructions
+- Discontinued medications (array):
+  - name, strength, reason for discontinuation, discontinued date (MM/DD/YYYY), prescribing provider
 
-Make all conditions and medications clinically appropriate.
-Ensure internal consistency across all medical history elements.
-All data must be completely synthetic.`;
+**Allergies (array):**
+- allergen (substance name), reaction (e.g., "Rash", "Anaphylaxis")
+- severity (Mild, Moderate, Severe), date identified (MM/DD/YYYY)
+
+**Chronic Conditions (array):**
+- condition name (e.g., "Hypertension", "Type 2 Diabetes")
+- diagnosed date (MM/DD/YYYY), status (Active, Controlled, Resolved), notes
+
+**Surgical History (array):**
+- procedure name, date of surgery (MM/DD/YYYY), hospital/facility name
+- surgeon name, complications ("None" if none)
+
+**Family History (array):**
+- relation (Mother, Father, Brother, Sister, Sibling, Cousin, etc.)
+- conditions (array of condition names), age at death or "Living"
+- cause of death (specific cause or "N/A")
+
+Make all conditions and medications clinically appropriate and internally consistent. All data must be completely synthetic.`;
 
   const systemPrompt = 'You are an experienced physician creating comprehensive synthetic medical histories for educational purposes. Generate realistic, clinically coherent medical data.';
 
@@ -843,16 +934,29 @@ export async function generateW2WithAI(
 - EIN: ${individual.employerEIN}
 - Address: ${individual.employerAddress.street}, ${individual.employerAddress.city}, ${individual.employerAddress.state} ${individual.employerAddress.zipCode}
 
-**Requirements:**
-- Annual wages: $30,000 - $150,000 (realistic amount)
-- Calculate realistic tax withholdings (federal ~15%, Social Security 6.2%, Medicare 1.45%, state ~5%)
-- Include realistic Box 12 codes (e.g., D for 401k, DD for health coverage)
-- All amounts formatted as decimal strings (e.g., "12345.67")
-- Tax year: current year minus 1
-- Include all wage and tax information
-- All data must be consistent and realistic
+**Required Fields (all amounts as decimal strings, e.g., "12345.67"):**
+- taxYear: Current year minus 1 (YYYY format)
+- wages: Annual wages $30,000-$150,000
+- federalIncomeTaxWithheld: ~15% of wages
+- socialSecurityWages: Usually same as wages
+- socialSecurityTaxWithheld: 6.2% of social security wages
+- medicareWages: Usually same as wages
+- medicareTaxWithheld: 1.45% of medicare wages
+- socialSecurityTips: null or dollar amount
+- allocatedTips: null or dollar amount
+- dependentCareBenefits: null or dollar amount
+- nonqualifiedPlans: null or dollar amount
+- box12Codes: Array of {code, amount} pairs (or null)
+  - Common codes: "D"=401k, "DD"=health insurance premiums, "W"=401k distribution
+- Checkboxes (nullable booleans):
+  - statutoryEmployee, retirementPlan, thirdPartySickPay
+- State/Local Information:
+  - stateWages: State wages (or null), stateIncomeTax: State tax (or null)
+  - localWages: Local wages (or null), localIncomeTax: Local tax (or null)
+  - localityName: Locality name (or null)
+- controlNumber: Employer control number (or null)
 
-Generate a complete, realistic W-2 statement.`;
+Generate a complete, realistic W-2 statement with all amounts consistent and realistic.`;
 
   const systemPrompt = 'You are an expert tax document generator creating synthetic W-2 forms for educational purposes. Generate completely fictional yet realistic tax data that follows IRS W-2 format requirements.';
 
@@ -920,17 +1024,26 @@ export async function generatePassportWithAI(
 - Gender: ${individual.gender}
 - Address: ${individual.address.street}, ${individual.address.city}, ${individual.address.state} ${individual.address.zipCode}
 
-**Requirements:**
-- Passport Number: 9 digits starting with 5-6
-- Issue Date: Within the last 10 years (ISO 8601 format: YYYY-MM-DD)
-- Expiry Date: 10 years after issue date (ISO 8601 format: YYYY-MM-DD)
-- Authority: "United States Department of State"
-- Machine Readable Zone (MRZ) Line 1: Format P<USA + last name (padded with <) + first name (padded with <)
-- Machine Readable Zone (MRZ) Line 2: Passport number + check digit + country code + birth date + gender + expiry date + check digit
-- All dates in ISO 8601 format (YYYY-MM-DD)
-- Endorsements: null or specific text if applicable
+**Required Fields:**
+- passportNumber: 9 digits, format starting with 5-6 (e.g., "520123456")
+- issuanceDate: ISO 8601 format (YYYY-MM-DD), within last 10 years
+- expiryDate: ISO 8601 format (YYYY-MM-DD), exactly 10 years after issuance
+- authority: "United States Department of State"
+- mrzLine1: Machine Readable Zone Line 1
+  - Format: P<USA followed by last name in CAPS (padded with < to 44 chars)
+  - Example: "P<USASMITH<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+- mrzLine2: Machine Readable Zone Line 2
+  - Format: [9-digit passport#][check digit][country][YYMMDD DOB][check][gender][YYMMDD expiry][check][other]
+  - Must include valid check digits
+- endorsements: null or specific endorsement text if applicable
 
-Generate realistic, properly formatted passport data.`;
+**Important:**
+- All dates in ISO 8601 format (YYYY-MM-DD)
+- MRZ lines must follow exact US passport format
+- Ensure internal consistency between dates
+- Generate realistic, properly formatted passport data
+
+All data must be completely synthetic and follow US State Department standards.`;
 
   const systemPrompt = 'You are an expert passport document generator creating synthetic US passport data for educational purposes. Generate completely fictional yet realistic passport documents following US State Department standards.';
 

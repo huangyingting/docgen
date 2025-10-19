@@ -29,7 +29,7 @@ interface ExportPdfStepProps {
   onPreview: (reportType: ReportType) => void;
   onExport: (reportType: ReportType, filename: string) => void;
   onBack: () => void;
-  isLoading: boolean;
+  loadingReportType: ReportType | null;
 }
 
 const ExportPdfStep: React.FC<ExportPdfStepProps> = ({
@@ -46,7 +46,7 @@ const ExportPdfStep: React.FC<ExportPdfStepProps> = ({
   onPreview,
   onExport,
   onBack,
-  isLoading
+  loadingReportType
 }) => {
   if (!generatedData) {
     return (
@@ -93,6 +93,11 @@ const ExportPdfStep: React.FC<ExportPdfStepProps> = ({
 
   // Filter to only show generated lab tests
   const availableLabTests = allLabTests.filter(test => generatedLabTypes.has(test.type));
+
+  // Helper function to check if a specific report is loading
+  const isReportLoading = (reportType: ReportType): boolean => {
+    return loadingReportType === reportType;
+  };
 
   // Generate filename suffix based on export format and quality level
   const getFilenameSuffix = (): string => {
@@ -218,7 +223,7 @@ const ExportPdfStep: React.FC<ExportPdfStepProps> = ({
                 description="Authentic-looking U.S. passport document with biographical data, machine readable zone (MRZ), and official seals - complete with passport photo"
                 onPreview={() => onPreview('passport')}
                 onGenerate={() => onExport('passport', `${generatedData?.individual?.id || 'individual'}-PASSPORT${getFilenameSuffix()}`.toUpperCase())}
-                isLoading={isLoading}
+                isLoading={isReportLoading('passport')}
                 iconType="insurance"
               />
 
@@ -227,7 +232,7 @@ const ExportPdfStep: React.FC<ExportPdfStepProps> = ({
                 description="IRS Form W-2 wage and tax statement for employees showing annual wages and tax withholdings"
                 onPreview={() => onPreview('w2')}
                 onGenerate={() => onExport('w2', `${generatedData?.individual?.id || 'individual'}-W2${getFilenameSuffix()}`.toUpperCase())}
-                isLoading={isLoading}
+                isLoading={isReportLoading('w2')}
                 iconType="insurance"
               />
             </DocumentGrid>
@@ -252,7 +257,7 @@ const ExportPdfStep: React.FC<ExportPdfStepProps> = ({
                 description="Standard health insurance claim form (HCFA-1500) with patient information, diagnosis codes, and service line items"
                 onPreview={() => onPreview('cms1500')}
                 onGenerate={() => onExport('cms1500', `${generatedData?.individual?.id || 'individual'}-CMS1500${getFilenameSuffix()}`.toUpperCase())}
-                isLoading={isLoading}
+                isLoading={isReportLoading('cms1500')}
                 iconType="insurance"
               />
 
@@ -261,7 +266,7 @@ const ExportPdfStep: React.FC<ExportPdfStepProps> = ({
                 description="Professional insurance policy certificate document with coverage details, subscriber information, and benefits summary"
                 onPreview={() => onPreview('insurancePolicy')}
                 onGenerate={() => onExport('insurancePolicy', `${generatedData?.individual?.id || 'individual'}-POLICY-CERTIFICATE${getFilenameSuffix()}`.toUpperCase())}
-                isLoading={isLoading}
+                isLoading={isReportLoading('insurancePolicy')}
                 iconType="insurance"
               />
             </DocumentGrid>
@@ -286,7 +291,7 @@ const ExportPdfStep: React.FC<ExportPdfStepProps> = ({
                 description="Comprehensive medical records including patient demographics, medical history, medications, lab results, and visit notes"
                 onPreview={() => onPreview('medical')}
                 onGenerate={() => onExport('medical', `${generatedData?.individual?.id || 'individual'}-MEDICAL-RECORDS${getFilenameSuffix()}`.toUpperCase())}
-                isLoading={isLoading}
+                isLoading={isReportLoading('medical')}
                 iconType="medical"
               />
 
@@ -295,7 +300,7 @@ const ExportPdfStep: React.FC<ExportPdfStepProps> = ({
                 description="Clinical visit summary with vital signs, chief complaint, assessment, and treatment plan - optimized for printed clinical records"
                 onPreview={() => onPreview('visitReport')}
                 onGenerate={() => onExport('visitReport', `${generatedData?.individual?.id || 'individual'}-VISIT-REPORT${getFilenameSuffix()}`.toUpperCase())}
-                isLoading={isLoading}
+                isLoading={isReportLoading('visitReport')}
                 iconType="visit"
               />
 
@@ -304,7 +309,7 @@ const ExportPdfStep: React.FC<ExportPdfStepProps> = ({
                 description="Comprehensive medication history report with current medications, discontinued medications, and allergy information"
                 onPreview={() => onPreview('medicationHistory')}
                 onGenerate={() => onExport('medicationHistory', `${generatedData?.individual?.id || 'individual'}-MEDICATION-HISTORY${getFilenameSuffix()}`.toUpperCase())}
-                isLoading={isLoading}
+                isLoading={isReportLoading('medicationHistory')}
                 iconType="medication"
               />
             </DocumentGrid>
@@ -333,7 +338,7 @@ const ExportPdfStep: React.FC<ExportPdfStepProps> = ({
                     description={test.description}
                     onPreview={() => onPreview(test.type)}
                     onGenerate={() => onExport(test.type, `${generatedData?.individual?.id || 'individual'}_${test.filename}${getFilenameSuffix()}`.toUpperCase())}
-                    isLoading={isLoading}
+                    isLoading={isReportLoading(test.type)}
                     compact
                     iconType="lab"
                   />

@@ -69,7 +69,7 @@ function App() {
   const [activeReportType, setActiveReportType] = useState<ReportType>('medical');
 
   // Export settings
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [loadingReportType, setLoadingReportType] = useState<ReportType | null>(null);
   const [exportFormat, setExportFormat] = useState<ExportFormat>('pdf');
   const [qualityLevel, setQualityLevel] = useState<QualityLevel>('standard');
   const [fontFamily, setFontFamily] = useState<string>('Times New Roman');
@@ -143,7 +143,7 @@ function App() {
       return;
     }
 
-    setIsLoading(true);
+    setLoadingReportType(reportType);
     
     // Track export start
     trackEvent(AnalyticsEvents.EXPORT_PDF_STARTED, {
@@ -195,7 +195,7 @@ function App() {
         error: error instanceof Error ? error.message : 'Unknown error',
       });
     } finally {
-      setIsLoading(false);
+      setLoadingReportType(null);
     }
   };
 
@@ -345,7 +345,7 @@ function App() {
             onPreview={handlePreview}
             onExport={handleExportPDF}
             onBack={handlePreviousStep}
-            isLoading={isLoading}
+            loadingReportType={loadingReportType}
           />
         );
       default:

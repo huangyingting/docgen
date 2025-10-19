@@ -199,6 +199,40 @@ const ExportPdfStep: React.FC<ExportPdfStepProps> = ({
         </Box>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {/* Individual Documents */}
+          <Box>
+            <Box sx={commonStyles.sectionHeaderWithIcon}>
+              <Box sx={commonStyles.sectionIconBox}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
+                </svg>
+              </Box>
+              <Typography variant="h4" sx={{ fontSize: '1.25rem', fontWeight: 700 }}>
+                Individual Documents
+              </Typography>
+            </Box>
+
+            <DocumentGrid columns="two">
+              <DocumentCard
+                title="U.S. Passport"
+                description="Authentic-looking U.S. passport document with biographical data, machine readable zone (MRZ), and official seals - complete with passport photo"
+                onPreview={() => onPreview('passport')}
+                onGenerate={() => onExport('passport', `${generatedData?.individual?.id || 'individual'}-PASSPORT${getFilenameSuffix()}`.toUpperCase())}
+                isLoading={isLoading}
+                iconType="insurance"
+              />
+
+              <DocumentCard
+                title="W-2 Wage and Tax Statement"
+                description="IRS Form W-2 wage and tax statement for employees showing annual wages and tax withholdings"
+                onPreview={() => onPreview('w2')}
+                onGenerate={() => onExport('w2', `${generatedData?.individual?.id || 'individual'}-W2${getFilenameSuffix()}`.toUpperCase())}
+                isLoading={isLoading}
+                iconType="insurance"
+              />
+            </DocumentGrid>
+          </Box>
+
           {/* Insurance Forms */}
           <Box>
             <Box sx={commonStyles.sectionHeaderWithIcon}>
@@ -227,24 +261,6 @@ const ExportPdfStep: React.FC<ExportPdfStepProps> = ({
                 description="Professional insurance policy certificate document with coverage details, subscriber information, and benefits summary"
                 onPreview={() => onPreview('insurancePolicy')}
                 onGenerate={() => onExport('insurancePolicy', `${generatedData?.individual?.id || 'individual'}-POLICY-CERTIFICATE${getFilenameSuffix()}`.toUpperCase())}
-                isLoading={isLoading}
-                iconType="insurance"
-              />
-
-              <DocumentCard
-                title="U.S. Passport"
-                description="Authentic-looking U.S. passport document with biographical data, machine readable zone (MRZ), and official seals - complete with passport photo"
-                onPreview={() => onPreview('passport')}
-                onGenerate={() => onExport('passport', `${generatedData?.individual?.id || 'individual'}-PASSPORT${getFilenameSuffix()}`.toUpperCase())}
-                isLoading={isLoading}
-                iconType="insurance"
-              />
-
-              <DocumentCard
-                title="W-2 Wage and Tax Statement"
-                description="IRS Form W-2 wage and tax statement for employees showing annual wages and tax withholdings"
-                onPreview={() => onPreview('w2')}
-                onGenerate={() => onExport('w2', `${generatedData?.individual?.id || 'individual'}-W2${getFilenameSuffix()}`.toUpperCase())}
                 isLoading={isLoading}
                 iconType="insurance"
               />

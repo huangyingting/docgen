@@ -375,6 +375,7 @@ function App() {
     if (reportType === 'insurancePolicy') return 'Insurance Policy Document';
     if (reportType === 'visitReport') return 'Visit Report';
     if (reportType === 'medicationHistory') return 'Medication History';
+    if (reportType === 'passport') return 'U.S. Passport';
     if (reportType === 'w2') return 'W-2 Wage and Tax Statement';
     if (labTitles[reportType]) return labTitles[reportType];
     return 'Medical Records Report';

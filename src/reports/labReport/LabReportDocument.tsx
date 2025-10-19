@@ -64,7 +64,7 @@ const LabReportDocument: React.FC<LabReportProps> = ({
             <div className="info-grid-2col">
               <div className="info-item">
                 <span className="info-label">Patient Name:</span>
-                <span className="info-value strong">{individual.firstName} {individual.lastName}</span>
+                <span className="info-value strong">{individual.firstName} {individual.middleInitial ? individual.middleInitial + ' ' : ''}{individual.lastName}</span>
               </div>
               <div className="info-item">
                 <span className="info-label">MRN:</span>

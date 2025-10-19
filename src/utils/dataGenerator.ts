@@ -22,7 +22,6 @@ import {
   VitalSigns,
   VisitReport,
   VisitNote,
-  CMS1500,
   Insured,
   Subscriber,
   InsuranceTypeSchema,
@@ -591,7 +590,6 @@ export const generateIndividual = (): Individual => {
 
   return {
     id: patientId,
-    name: `${lastName}, ${firstName} ${middleInitial}`,
     firstName,
     lastName,
     middleInitial,
@@ -703,7 +701,8 @@ export const generateInsured = (
   const policy = policyNumber || faker.string.alphanumeric({ length: 12, casing: 'upper' });
 
   return {
-    name: `${faker.person.lastName()}, ${faker.person.firstName()}`,
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName(),
     policyNumber: policy,
     planName: `${provider} ${faker.helpers.arrayElement(INSURANCE_PLAN_TYPES)} Plan`
   };
@@ -717,7 +716,8 @@ export const generateSubscriber = (): Subscriber => {
   const gender = faker.helpers.arrayElement(['Male', 'Female', 'Other'] as const);
 
   return {
-    name: `${faker.person.lastName()}, ${faker.person.firstName()} ${faker.string.alpha({ length: 1, casing: 'upper' })}`,
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName(),
     dateOfBirth: faker.date.birthdate({ min: 18, max: 85, mode: 'age' }).toLocaleDateString('en-US'),
     gender,
     address: {
@@ -744,7 +744,8 @@ export const generateInsuranceInfo = (
   // 70% chance to use individual as subscriber
   const subscriber = faker.datatype.boolean(0.7) 
     ? {
-        name: individual.name,
+        firstName: individual.firstName,
+        lastName: individual.lastName,
         dateOfBirth: individual.dateOfBirth,
         gender: individual.gender,
         address: individual.address,
@@ -761,7 +762,8 @@ export const generateInsuranceInfo = (
   return {
     primaryInsurance,
     secondaryInsurance,
-    subscriberName: subscriber.name,
+    subscriberFirstName: subscriber.firstName,
+    subscriberLastName: subscriber.lastName,
     subscriberDOB: subscriber.dateOfBirth,
     subscriberGender: subscriber.gender,
     insuranceType: faker.helpers.arrayElement(InsuranceTypeSchema.options),
@@ -893,7 +895,7 @@ export const generateClaimInfo = (
     patientRelationship: (() => {
       // Determine if patient is the subscriber      
       // If names match, patient is self; otherwise randomly select relationship
-      return insuranceInfo.subscriberName === `${individual.firstName} ${individual.lastName}`
+      return insuranceInfo.subscriberFirstName === individual.firstName && insuranceInfo.subscriberLastName === individual.lastName
         ? 'self' as const
         : faker.helpers.arrayElement(['spouse', 'child', 'other'] as const);
     })(),

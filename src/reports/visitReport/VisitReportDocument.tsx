@@ -58,7 +58,7 @@ const VisitReportDocument: React.FC<VisitReportDocumentProps> = ({
             <div className="info-grid">
               <div className="info-row">
                 <span className="info-label">Patient Name:</span>
-                <span className="info-value strong">{individual.name}</span>
+                <span className="info-value strong">{individual.firstName} {individual.lastName}</span>
               </div>
               <div className="info-row">
                 <span className="info-label">MRN:</span>

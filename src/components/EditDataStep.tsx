@@ -3,7 +3,7 @@ import { Box, Typography, Tabs, Tab, Button, TextField, Select, MenuItem, FormCo
 import { ExpandMore as ExpandMoreIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { GeneratedData, Individual, InsuranceInfo, Provider, MedicalHistory, VisitReport, LabReport, LabTestType, ChronicCondition, DiscontinuedMedication, SurgicalHistory, FamilyHistory } from '../utils/zodSchemas';
 import { MEDICAL_SPECIALTIES, INDUSTRIES } from '../utils/dataGenerator';
-import { StepContainer, SectionTitle, FormGrid, TabContent, LoadingSpinner, FloatingActionBar, SubTitle } from './SharedComponents';
+import { StepContainer, FormGrid, TabContent, LoadingSpinner, FloatingActionBar, SubTitle } from './SharedComponents';
 import * as styles from '../styles/commonStyles';
 
 // Accordion icon helper function
@@ -165,7 +165,7 @@ const EditDataStep: React.FC<EditDataStepProps> = ({ generatedData, onDataUpdate
         }
         current = current[keys[i]];
       }
-      current[keys[keys.length - 1]] = value;
+      current[keys[keys.length - 1]] = value;      
       
       return updated;
     });
@@ -756,9 +756,18 @@ const InsuranceSection: React.FC<InsuranceSectionProps> = ({ data, onChange }) =
       </SubTitle>
       <FormGrid sx={{ mb: 3 }}>
         <TextField
-          label="Subscriber Name"
-          value={data.subscriberName || ''}
-          onChange={(e) => onChange('subscriberName', e.target.value)}
+          label="Subscriber First Name"
+          value={data.subscriberFirstName || ''}
+          onChange={(e) => onChange('subscriberFirstName', e.target.value)}
+          placeholder="If different from patient"
+          fullWidth
+          size="small"
+        />
+        
+        <TextField
+          label="Subscriber Last Name"
+          value={data.subscriberLastName || ''}
+          onChange={(e) => onChange('subscriberLastName', e.target.value)}
           placeholder="If different from patient"
           fullWidth
           size="small"

@@ -84,7 +84,7 @@ const InsurancePolicyDocument: React.FC<InsurancePolicyDocumentProps> = ({
             <tbody>
               <tr>
                 <td className="label-col">Name:</td>
-                <td className="value-col">{insuranceInfo.subscriberName || individual.name}</td>
+                <td className="value-col">{insuranceInfo.subscriberFirstName && insuranceInfo.subscriberLastName ? `${insuranceInfo.subscriberFirstName} ${insuranceInfo.subscriberLastName}` : `${individual.firstName} ${individual.lastName}`}</td>
                 <td className="label-col">DOB:</td>
                 <td className="value-col">{insuranceInfo.subscriberDOB || individual.dateOfBirth}</td>
                 <td className="label-col">Gender:</td>
@@ -101,14 +101,14 @@ const InsurancePolicyDocument: React.FC<InsurancePolicyDocumentProps> = ({
         </div>
 
         {/* Dependent Information (if subscriber is different from patient) */}
-        {insuranceInfo.subscriberName && insuranceInfo.subscriberName !== individual.name && (
+        {insuranceInfo.subscriberFirstName && insuranceInfo.subscriberLastName && (insuranceInfo.subscriberFirstName !== individual.firstName || insuranceInfo.subscriberLastName !== individual.lastName) && (
           <div className="compact-section">
             <h3 className="section-title">DEPENDENT INFORMATION</h3>
             <table className="info-table">
               <tbody>
                 <tr>
                   <td className="label-col">Name:</td>
-                  <td className="value-col">{individual.name}</td>
+                  <td className="value-col">{`${individual.firstName} ${individual.lastName}`}</td>
                   <td className="label-col">DOB:</td>
                   <td className="value-col">{individual.dateOfBirth}</td>
                   <td className="label-col">Gender:</td>

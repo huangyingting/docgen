@@ -55,7 +55,7 @@ const MedicationHistoryDocument: React.FC<MedicationHistoryDocumentProps> = ({
         <div className="medication-info-box">
           <div className="info-row">
             <span className="info-label">Patient Name:</span>
-            <span className="info-value strong">{individual.name}</span>
+            <span className="info-value strong">{individual.firstName} {individual.middleInitial ? individual.middleInitial + ' ' : ''}{individual.lastName}</span>
           </div>
           <div className="info-row">
             <span className="info-label">MRN:</span>

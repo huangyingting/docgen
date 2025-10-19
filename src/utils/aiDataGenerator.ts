@@ -13,7 +13,6 @@ import {
   Individual,
   Provider,
   InsuranceInfo,
-  CMS1500,
   LabReport,
   VisitReports,
   MedicalHistory,
@@ -412,7 +411,8 @@ Generate realistic insurance information following US healthcare standards.`;
     if (useIndividualAsSubscriber) {
       validatedData = {
         ...validatedData,
-        subscriberName: individual.name,
+        subscriberFirstName: individual.firstName,
+        subscriberLastName: individual.lastName,
         subscriberDOB: individual.dateOfBirth,
         subscriberGender: individual.gender,
         address: individual.address,

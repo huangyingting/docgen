@@ -16,12 +16,11 @@ import {
   IndividualSchema,
   ProviderSchema,
   MedicalHistorySchema,
-  CMS1500Schema,
+  ClaimInfoSchema,
   VisitReportSchema,
   LabReportSchema,
   LabReportsSchema,
   InsuranceInfoSchema,
-  ClaimInfoSchema,
   W2Schema,
   PassportSchema
 } from './zodSchemas';
@@ -106,15 +105,6 @@ export const ResponseFormats = {
     InsuranceInfoSchema,
     'InsuranceResponse',
     { description: 'Insurance information', strict: true }
-  ),
-
-  /**
-   * CMS-1500 claim form data with patient, insurance, provider, and claim details
-   */
-  CMS1500: zodToOpenAISchema(
-    CMS1500Schema,
-    'CMS1500Response',
-    { description: 'CMS-1500 claim form data', strict: true }
   ),
 
   /**

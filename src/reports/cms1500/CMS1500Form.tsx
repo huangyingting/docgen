@@ -103,7 +103,7 @@ const CMS1500Form: React.FC<CMS1500FormProps> = ({ individual, insuranceInfo, pr
           <div className="form-row">
             <div className="form-field field-4">
               <label>4. INSURED'S NAME (Last Name, First Name, Middle Initial)</label>
-              <div className="field-value">{insuranceInfo?.subscriberName || individual?.name}</div>
+              <div className="field-value">{insuranceInfo?.subscriberLastName && insuranceInfo?.subscriberFirstName ? `${insuranceInfo?.subscriberLastName}, ${insuranceInfo?.subscriberFirstName}` : `${individual?.lastName}, ${individual?.firstName} ${individual?.middleInitial || ''}`}</div>
             </div>
             <div className="form-field field-5">
               <label>5. PATIENT'S ADDRESS (No., Street)</label>
@@ -174,7 +174,7 @@ const CMS1500Form: React.FC<CMS1500FormProps> = ({ individual, insuranceInfo, pr
           <div className="form-row">
             <div className="form-field field-9">
               <label>9. OTHER INSURED'S NAME (Last Name, First Name, Middle Initial)</label>
-              <div className="field-value">{insuranceInfo?.secondaryInsured?.name || ''}</div>
+              <div className="field-value">{insuranceInfo?.secondaryInsured ? `${insuranceInfo?.secondaryInsured?.lastName}, ${insuranceInfo?.secondaryInsured?.firstName}` : ''}</div>
               <div className="subfield">
                 <label>a. OTHER INSURED'S POLICY OR GROUP NUMBER</label>
                 <div className="field-value">{insuranceInfo?.secondaryInsured?.policyNumber || ''}</div>
@@ -353,7 +353,7 @@ const CMS1500Form: React.FC<CMS1500FormProps> = ({ individual, insuranceInfo, pr
             <p style={{ margin: '2mm 0 0 0', fontSize: '9px' }}>Page 2 - Service Details</p>
           </div>
           <div className="header-right">
-            <p style={{ margin: 0, fontSize: '9px' }}>Patient: {individual?.name}</p>
+            <p style={{ margin: 0, fontSize: '9px' }}>Patient: {individual?.firstName} {individual?.middleInitial} {individual?.lastName}</p>
             <p style={{ margin: '1mm 0 0 0', fontSize: '9px' }}>Account #: {individual?.accountNumber}</p>
           </div>
         </div>

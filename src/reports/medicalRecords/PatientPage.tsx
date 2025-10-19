@@ -77,7 +77,7 @@ const PatientPage: React.FC<PatientPageProps> = ({ individual, provider, insuran
                 <td className="label">Medical Record #:</td>
                 <td className="value">{individual.id}</td>
                 <td className="label">Full Name:</td>
-                <td className="value">{individual.firstName} {individual.lastName}</td>
+                <td className="value">{individual.firstName} {individual.middleInitial ? individual.middleInitial + ' ' : ''}{individual.lastName}</td>
               </tr>
               <tr>
                 <td className="label">Date of Birth:</td>
@@ -195,7 +195,7 @@ const PatientPage: React.FC<PatientPageProps> = ({ individual, provider, insuran
         </div>
         <div className="page-info">
           <span>Page 1 of 5</span>
-          <span>Patient: {individual.firstName} {individual.lastName}</span>
+          <span>Patient: {individual.firstName} {individual.middleInitial ? individual.middleInitial + ' ' : ''}{individual.lastName}</span>
           <span>MRN: {individual.id}</span>
         </div>
       </footer>

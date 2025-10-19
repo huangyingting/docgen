@@ -47,13 +47,15 @@ export const PharmacySchema = z.object({
 });
 
 export const InsuredSchema = z.object({
-  name: z.string().describe('Insured person full name (LastName, FirstName format)'),
+  firstName: z.string().describe('Insured person first name'),
+  lastName: z.string().describe('Insured person last name'),
   policyNumber: z.string().describe('Insurance policy number'),
   planName: z.string().describe('Insurance plan name')
 });
 
 export const SubscriberSchema = z.object({
-  name: z.string().describe('Subscriber full name'),
+  firstName: z.string().describe('Subscriber first name'),
+  lastName: z.string().describe('Subscriber last name'),
   dateOfBirth: z.string().describe('Subscriber date of birth'),
   gender: GenderSchema,
   address: AddressSchema,
@@ -66,7 +68,6 @@ export const SubscriberSchema = z.object({
 
 export const IndividualSchema = z.object({
   id: z.string().describe('Unique patient identifier'),
-  name: z.string().describe('Full name (FirstName MiddleInitial LastName)'),
   firstName: z.string().describe('First name'),
   lastName: z.string().describe('Last name'),
   middleInitial: z.string().nullable().describe('Middle initial'),
@@ -106,7 +107,8 @@ export type InsuranceType = z.infer<typeof InsuranceTypeSchema>;
 export const InsuranceInfoSchema = z.object({
   primaryInsurance: InsuranceSchema,
   secondaryInsurance: InsuranceSchema.nullable(),
-  subscriberName: z.string().describe('Subscribername if different from patient'),
+  subscriberFirstName: z.string().describe('Subscriber first name if different from patient'),
+  subscriberLastName: z.string().describe('Subscriber last name if different from patient'),
   subscriberDOB: z.string().describe('Subscriber date of birth'),
   subscriberGender: GenderSchema,
   insuranceType: InsuranceTypeSchema,
@@ -234,14 +236,6 @@ export const VisitNoteSchema = z.object({
 // ============================================================================
 // Complete Document Schemas
 // ============================================================================
-
-export const CMS1500Schema = z.object({
-  individual: IndividualSchema,
-  insuranceInfo: InsuranceInfoSchema,
-  provider: ProviderSchema,
-  claimInfo: ClaimInfoSchema
-});
-
 
 export const VisitReportSchema = z.object({
   visit: VisitNoteSchema,
@@ -474,7 +468,6 @@ export type Insured = z.infer<typeof InsuredSchema>;
 export type Subscriber = z.infer<typeof SubscriberSchema>;
 
 // Composite Document types
-export type CMS1500 = z.infer<typeof CMS1500Schema>;
 export type VisitReport = z.infer<typeof VisitReportSchema>;
 export type VisitReports = z.infer<typeof VisitReportsSchema>;
 export type W2 = z.infer<typeof W2Schema>;

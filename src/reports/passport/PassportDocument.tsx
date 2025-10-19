@@ -101,7 +101,7 @@ const PassportDocument: React.FC<PassportDocumentProps> = ({
                 <div className="data-field">
                   <div className="data-label">Given Names / Prénoms / Nombres</div>
                   <div className="data-value">
-                    {individual.firstName.toUpperCase()} {individual.middleInitial?.toUpperCase() || ''}
+                    {individual.firstName.toUpperCase()} {individual.middleInitial ? individual.middleInitial.toUpperCase() : ''}
                   </div>
                 </div>
 

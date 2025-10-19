@@ -21,9 +21,11 @@ import {
   generateLabReportsWithAI,
   generateVisitReportsWithAI,
   generateMedicalHistoryWithAI,
+  generateW2WithAI,
+  generatePassportWithAI,
   AzureOpenAIConfig,
 } from '../src/utils/aiDataGenerator';
-import { Individual, Provider, Complexity } from '../src/utils/zodSchemas';
+import { Individual, Provider, Complexity, W2, Passport } from '../src/utils/zodSchemas';
 import { CacheConfig } from '../src/utils/cache';
 
 // ============================================================================
@@ -345,41 +347,168 @@ async function testGenerateMedicalHistory(individual: Individual) {
 }
 
 /**
- * Test 8: Integration Test - Complete Medical Record
+ * Test 10: Generate W-2 Form
  */
+async function testGenerateW2(individual: Individual) {
+  printHeader('Test 8: Generate W-2 Form');
+
+  if (!individual) {
+    console.log('❌ Skipping W-2 test - no individual data available');
+    return { passed: false };
+  }
+
+  // Test 8a: Generate W-2 form
+  const result1 = await runTest('Generate W-2 wage and tax statement', async () => {
+    const w2 = await generateW2WithAI(config, individual, cacheConfig);
+    
+    // Validate key fields
+    if (!w2.taxYear || !w2.wages || !w2.federalIncomeTaxWithheld) {
+      throw new Error('Missing required W-2 fields');
+    }
+    
+    // Validate amounts are strings (decimal format)
+    if (typeof w2.wages !== 'string' || typeof w2.federalIncomeTaxWithheld !== 'string') {
+      throw new Error('W-2 amounts must be strings in decimal format');
+    }
+    
+    return w2;
+  });
+
+  // Test 8b: Verify tax calculations are realistic
+  if (result1.data) {
+    const result2 = await runTest('Validate W-2 tax calculations', async () => {
+      const w2 = result1.data as W2;
+      const wages = parseFloat(w2.wages);
+      const federalTax = parseFloat(w2.federalIncomeTaxWithheld);
+      const ssTax = parseFloat(w2.socialSecurityTaxWithheld);
+      const medicareTax = parseFloat(w2.medicareTaxWithheld);
+
+      // Federal tax should be 10-20% of wages
+      if (federalTax < wages * 0.10 || federalTax > wages * 0.25) {
+        throw new Error(`Federal tax ${federalTax} not in realistic range for wages ${wages}`);
+      }
+
+      // Social Security tax should be ~6.2% of wages
+      const expectedSS = wages * 0.062;
+      if (Math.abs(ssTax - expectedSS) > wages * 0.01) {
+        console.warn(`  Warning: Social Security tax ${ssTax} differs from expected ${expectedSS}`);
+      }
+
+      return { validated: true };
+    });
+
+    return {
+      passed: result1.success && result2.success,
+      w2: result1.data,
+    };
+  }
+
+  return { passed: result1.success };
+}
+
+/**
+ * Test 9: Generate Passport
+ */
+async function testGeneratePassport(individual: Individual) {
+  printHeader('Test 9: Generate Passport');
+
+  if (!individual) {
+    console.log('❌ Skipping Passport test - no individual data available');
+    return { passed: false };
+  }
+
+  // Test 9a: Generate passport
+  const result1 = await runTest('Generate US Passport document', async () => {
+    const passport = await generatePassportWithAI(config, individual, cacheConfig);
+    
+    // Validate required fields
+    if (!passport.passportNumber || !passport.issuanceDate || !passport.expiryDate) {
+      throw new Error('Missing required passport fields');
+    }
+    
+    // Validate passport number format (9 digits)
+    if (!/^\d{9}$/.test(passport.passportNumber)) {
+      throw new Error(`Invalid passport number format: ${passport.passportNumber}`);
+    }
+    
+    return passport;
+  });
+
+  // Test 9b: Verify date validity and MRZ
+  if (result1.data) {
+    const result2 = await runTest('Validate Passport dates and MRZ', async () => {
+      const passport = result1.data as Passport;
+      
+      // Parse dates
+      const issueDate = new Date(passport.issuanceDate);
+      const expiryDate = new Date(passport.expiryDate);
+      
+      // Expiry should be 10 years after issuance
+      const expectedExpiry = new Date(issueDate);
+      expectedExpiry.setFullYear(expectedExpiry.getFullYear() + 10);
+      
+      const daysDiff = Math.abs(
+        (expiryDate.getTime() - expectedExpiry.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      
+      if (daysDiff > 1) {
+        throw new Error(`Expiry date ${expiryDate} not 10 years from issue date ${issueDate}`);
+      }
+      
+      // Validate MRZ lines exist and have content
+      if (!passport.mrzLine1 || !passport.mrzLine2) {
+        throw new Error('Missing MRZ lines');
+      }
+      
+      // MRZ Line 1 should start with P<USA
+      if (!passport.mrzLine1.startsWith('P<USA')) {
+        console.warn(`  Warning: MRZ Line 1 format may be incorrect: ${passport.mrzLine1.substring(0, 30)}...`);
+      }
+      
+      return { validated: true };
+    });
+
+    return {
+      passed: result1.success && result2.success,
+      passport: result1.data,
+    };
+  }
+
+  return { passed: result1.success };
+}
 async function testCompleteIntegration() {
-  printHeader('Test 8: Integration Test - Complete Medical Record Generation');
+  printHeader('Test 10: Integration Test - Complete Medical Record Generation');
 
   console.log('Generating a complete medical record with all components...\n');
 
   try {
     // Step 1: Generate Individual
-    console.log('Step 1/7: Generating individual...');
+    console.log('Step 1/9: Generating individual...');
     const individual = await generateIndividualWithAI(config, cacheConfig);
-    console.log(`✅ Individual: ${individual.name}`);
+    console.log(`✅ Individual: ${individual.firstName} ${individual.lastName}`);
 
     // Step 2: Generate Provider
-    console.log('\nStep 2/7: Generating provider...');
+    console.log('\nStep 2/9: Generating provider...');
     const provider = await generateProviderWithAI(config, cacheConfig);
     console.log(`✅ Provider: ${provider.name}`);
 
     // Step 3: Generate Insurance
-    console.log('\nStep 3/7: Generating insurance...');
+    console.log('\nStep 3/9: Generating insurance...');
     const insurance = await generateInsuranceInfoWithAI(config, individual, true, cacheConfig);
     console.log(`✅ Insurance: ${insurance.primaryInsurance.provider}`);
 
     // Step 4: Generate Medical History
-    console.log('\nStep 4/7: Generating medical history...');
+    console.log('\nStep 4/9: Generating medical history...');
     const medicalHistory = await generateMedicalHistoryWithAI(config, 'medium', cacheConfig);
     console.log(`✅ Medical History: ${medicalHistory.medications.current.length} medications, ${medicalHistory.chronicConditions.length} conditions`);
 
     // Step 5: Generate Visit Reports
-    console.log('\nStep 5/7: Generating visit reports...');
+    console.log('\nStep 5/9: Generating visit reports...');
     const visitReports = await generateVisitReportsWithAI(config, 1, provider.name, cacheConfig);
     console.log(`✅ Visit Reports: ${visitReports[0]?.visit.chiefComplaint}`);
 
     // Step 6: Generate Lab Reports
-    console.log('\nStep 6/7: Generating lab reports...');
+    console.log('\nStep 6/9: Generating lab reports...');
     const labReports = await generateLabReportsWithAI(
       config,
       ['CBC', 'BMP'],
@@ -389,9 +518,19 @@ async function testCompleteIntegration() {
     console.log(`✅ Lab Reports: Generated ${labReports.length} reports`);
 
     // Step 7: Generate Claim Information
-    console.log('\nStep 7/7: Generating Claim Information...');
+    console.log('\nStep 7/9: Generating claim information...');
     const claimInfo = await generateClaimInfoWithAI(config, individual, insurance, provider, cacheConfig);
     console.log(`✅ Claim Information: ${claimInfo.serviceLines.length} service lines`);
+
+    // Step 8: Generate W-2 Form
+    console.log('\nStep 8/9: Generating W-2 form...');
+    const w2 = await generateW2WithAI(config, individual, cacheConfig);
+    console.log(`✅ W-2 Form: Tax year ${w2.taxYear}, Wages: $${parseFloat(w2.wages).toLocaleString()}`);
+
+    // Step 9: Generate Passport
+    console.log('\nStep 9/9: Generating passport...');
+    const passport = await generatePassportWithAI(config, individual, cacheConfig);
+    console.log(`✅ Passport: Number ${passport.passportNumber}, Expires ${passport.expiryDate}`);
 
     console.log('\n' + '='.repeat(80));
     console.log('✅ Complete medical record generated successfully!');
@@ -413,6 +552,7 @@ async function runAllTests() {
   console.log('╔═══════════════════════════════════════════════════════════════════════════════╗');
   console.log('║                     AI Data Generator Test Suite                              ║');
   console.log('║                  Testing Azure OpenAI Integration                             ║');
+  console.log('║                  Testing all 9 AI generation functions                       ║');
   console.log('╚═══════════════════════════════════════════════════════════════════════════════╝');
 
   // Validate configuration
@@ -436,48 +576,60 @@ async function runAllTests() {
 
   // Test 1: Individual Generation
   const test1 = await testGenerateIndividual();
-  results['Individual Generation'] = test1.passed;
+  results['Test 1: Individual Generation'] = test1.passed;
   individual = test1.individual;
 
   // Test 2: Provider Generation
   const test2 = await testGenerateProvider();
-  results['Provider Generation'] = test2.passed;
+  results['Test 2: Provider Generation'] = test2.passed;
   provider = test2.provider;
 
   // Test 3: Insurance Information (requires individual)
   if (individual) {
     const test3 = await testGenerateInsurance(individual);
-    results['Insurance Information'] = test3.passed;
+    results['Test 3: Insurance Information'] = test3.passed;
     insurance = test3.insurance;
   }
 
   // Test 4: CMS-1500 Form (requires individual, insurance, provider)
   if (individual && insurance && provider) {
     const test4 = await testGenerateClaimInfo(individual, insurance, provider);
-    results['CMS-1500 Form'] = test4.passed;
+    results['Test 4: CMS-1500 Form'] = test4.passed;
   }
 
   // Test 5: Laboratory Reports (requires individual, provider)
   if (individual && provider) {
     const test5 = await testGenerateLabReports(individual, provider);
-    results['Laboratory Reports'] = test5.passed;
+    results['Test 5: Laboratory Reports'] = test5.passed;
   }
 
   // Test 6: Visit Report (requires individual, provider)
   if (individual && provider) {
     const test6 = await testGenerateVisitReport(individual, provider);
-    results['Visit Report'] = test6.passed;
+    results['Test 6: Visit Report'] = test6.passed;
   }
 
   // Test 7: Medical History (requires individual)
   if (individual) {
     const test7 = await testGenerateMedicalHistory(individual);
-    results['Medical History'] = test7.passed;
+    results['Test 7: Medical History'] = test7.passed;
   }
 
-  // Test 8: Complete Integration Test
-  const test8 = await testCompleteIntegration();
-  results['Complete Integration'] = test8.passed;
+  // Test 8: W-2 Form (requires individual)
+  if (individual) {
+    const test8 = await testGenerateW2(individual);
+    results['Test 8: W-2 Form'] = test8.passed;
+  }
+
+  // Test 9: Passport (requires individual)
+  if (individual) {
+    const test9 = await testGeneratePassport(individual);
+    results['Test 9: Passport'] = test9.passed;
+  }
+
+  // Test 10: Complete Integration Test
+  const test10 = await testCompleteIntegration();
+  results['Test 10: Complete Integration'] = test10.passed;
 
   // Print summary
   const endTime = Date.now();

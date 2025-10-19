@@ -1,354 +1,346 @@
-/* W-2 Form Styles - Authentic IRS Form W-2 Layout */
+/*
+ * W-2 Form - Fresh Implementation Based on SVG
+ * SVG ViewBox: 0 0 541.069 348.371
+ * Scaled to A4 paper: 190mm width
+ */
+
 .w2-report {
   background: #f5f5f5;
-  color: #000;
-  line-height: 1.2;
-  font-size: 8px;
   padding: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 
-/* Ensure font family inheritance */
-.w2-report * {
-  font-family: inherit;
-  box-sizing: border-box;
-}
-
-/* A4 Page Structure */
 .w2-page {
   width: 210mm;
   min-height: 297mm;
-  padding: 20mm;
-  margin: 0 auto 15px auto;
+  padding: 10mm;
+  margin: 0 auto;
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
 }
 
-.w2-page:last-child {
-  margin-bottom: 0;
-}
-
-/* W-2 Form Container - actual form size */
+/* Main form container - 190mm width (scaled from SVG 541.069px) */
 .w2-form {
-  width: 180mm;
-  border: 2px solid #000;
+  width: 190mm;
   background: white;
+  border: 1px solid #000;
   position: relative;
-  padding: 0;
+  margin: 0 auto;
 }
 
-/* VOID checkbox in top left */
-.w2-void {
+/* Void/Year display - top left */
+.w2-void-year {
   position: absolute;
-  top: 3mm;
-  left: 3mm;
-  display: flex;
-  align-items: center;
-  gap: 2mm;
-  font-size: 7px;
+  top: 2mm;
+  left: 15mm;
+  font-size: 14px;
   font-weight: bold;
+  letter-spacing: 2mm;
   z-index: 10;
 }
 
-.w2-void input[type="checkbox"] {
-  width: 3mm;
-  height: 3mm;
-  margin: 0;
-}
-
-/* Top Section - Identity and Header */
-.w2-top-section {
-  display: flex;
-  border-bottom: 1px solid #000;
-}
-
-/* Left Column (boxes a-f) */
-.w2-left-column {
-  flex: 0 0 65%;
-  border-right: 1px solid #000;
-}
-
-/* Right Header (Form info and year) */
-.w2-right-header {
-  flex: 0 0 35%;
+/* Grid layout */
+.w2-grid {
   display: flex;
   flex-direction: column;
 }
 
-.w2-form-info {
-  padding: 2mm;
-  text-align: right;
-  border-bottom: 1px solid #000;
-}
-
-.w2-omb {
-  font-size: 6px;
-  font-weight: bold;
-}
-
-.w2-safe-box {
-  padding: 2mm;
-  text-align: center;
-  border-bottom: 1px solid #000;
-  background: #f9f9f9;
-}
-
-.w2-safe-label {
-  font-size: 7px;
-  font-weight: bold;
-  line-height: 1.3;
-}
-
-.w2-efile {
-  margin-top: 1mm;
-  font-size: 9px;
-  font-weight: bold;
-  color: #0066cc;
+.w2-row {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1mm;
+  border-bottom: 0.5px solid #000;
 }
 
-.w2-form-number-box {
-  padding: 2mm 3mm;
-  text-align: center;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 1mm;
+.w2-row:last-child {
+  border-bottom: none;
 }
 
-.w2-form-number {
-  font-size: 11px;
-  font-weight: bold;
-}
-
-.w2-form-title {
-  font-size: 9px;
-  font-weight: bold;
-  line-height: 1.3;
-}
-
-.w2-year-box {
-  font-size: 16px;
-  font-weight: bold;
-  margin: 1mm 0;
-}
-
-.w2-copy-label {
-  font-size: 6px;
-  font-weight: bold;
-  margin-top: 2mm;
-  line-height: 1.3;
-}
-
-.w2-instruction {
-  font-size: 5px;
-  margin-top: 1mm;
-  line-height: 1.3;
-}
-
-/* Box Styles */
+/* Box base styles */
 .w2-box {
-  border-bottom: 1px solid #000;
   padding: 1.5mm 2mm;
-  min-height: 8mm;
+  border-right: 0.5px solid #000;
+  display: flex;
+  flex-direction: column;
 }
 
 .w2-box:last-child {
-  border-bottom: none;
+  border-right: none;
 }
 
-.w2-box-label {
-  font-size: 6px;
+.w2-label {
+  font-size: 7px;
   font-weight: bold;
   margin-bottom: 1mm;
   line-height: 1.2;
-  display: block;
 }
 
-.w2-box-value {
+.w2-value {
   font-size: 10px;
-  font-weight: normal;
   line-height: 1.3;
+  flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .w2-multiline {
-  line-height: 1.4;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5mm;
 }
 
-.w2-multiline div {
-  margin-bottom: 0.5mm;
+/* Row 1: Box a (54.6%) + OMB (45.4%) */
+.w2-row-1 {
+  border-top: 1px solid #000;
 }
 
-/* Specific boxes in left column */
 .w2-box-a {
-  min-height: 10mm;
+  flex: 0 0 54.6%;
+  height: 8.4mm;
 }
 
+.w2-box-omb {
+  flex: 0 0 45.4%;
+  height: 8.4mm;
+  text-align: right;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+/* Row 2: Box b (54.6%) + Box 1 (22.7%) + Box 2 (22.7%) */
 .w2-box-b {
-  border-right: none;
+  flex: 0 0 54.6%;
+  height: 8.4mm;
+}
+
+.w2-box-1 {
+  flex: 0 0 22.7%;
+  height: 8.4mm;
+}
+
+.w2-box-2 {
+  flex: 0 0 22.7%;
+  height: 8.4mm;
+}
+
+/* Row 3-5: Box c (54.6%) + Boxes 3-8 container (45.4%) */
+.w2-row-3-5 {
+  display: flex;
 }
 
 .w2-box-c {
-  min-height: 15mm;
+  flex: 0 0 54.6%;
+  height: 25.2mm;
 }
 
-.w2-box-d {
-  min-height: 8mm;
+.w2-boxes-3-8 {
+  flex: 0 0 45.4%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
-.w2-box-e {
-  min-height: 10mm;
+.w2-box-3,
+.w2-box-5,
+.w2-box-7 {
+  height: 8.4mm;
+  border-right: 0.5px solid #000;
+  border-bottom: 0.5px solid #000;
 }
 
-.w2-box-f {
-  min-height: 12mm;
-  border-bottom: none;
+.w2-box-4,
+.w2-box-6,
+.w2-box-8 {
+  height: 8.4mm;
+  border-bottom: 0.5px solid #000;
 }
 
-/* Numbered Boxes Section */
-.w2-numbered-boxes {
-  border-top: none;
-}
-
-.w2-box-row {
-  display: flex;
-  border-bottom: 1px solid #000;
-}
-
-.w2-box-row .w2-box {
-  flex: 1;
-  border-right: 1px solid #000;
-  border-bottom: none;
-  min-height: 12mm;
-}
-
-.w2-box-row .w2-box:last-child {
+.w2-box-8 {
   border-right: none;
 }
 
-/* Box 12 and 13 special layout */
-.w2-box-12-13-wrapper {
-  flex: 1;
+/* Row 6: Box d (54.6%) + Box 9 (22.7%) + Box 10 (22.7%) */
+.w2-box-d {
+  flex: 0 0 54.6%;
+  height: 8.4mm;
+}
+
+.w2-box-9 {
+  flex: 0 0 22.7%;
+  height: 8.4mm;
+  background: #c0c0c0;
+}
+
+.w2-box-10 {
+  flex: 0 0 22.7%;
+  height: 8.4mm;
+}
+
+/* Row 7: Box e split (26%, 24%, 4.6%) + Box 11 (45.4%) */
+.w2-row-7 {
+  border-bottom: 0.5px solid #000;
+}
+
+.w2-box-e-first {
+  flex: 0 0 26%;
+  height: 8.4mm;
+}
+
+.w2-box-e-last {
+  flex: 0 0 24%;
+  height: 8.4mm;
+}
+
+.w2-box-e-suff {
+  flex: 0 0 4.6%;
+  height: 8.4mm;
+}
+
+.w2-box-11 {
+  flex: 0 0 45.4%;
+  height: 8.4mm;
+}
+
+/* Rows 8-9: Box f (54.6%) + Right section (45.4%) */
+.w2-row-8-9 {
+  display: flex;
+}
+
+.w2-box-f {
+  flex: 0 0 54.6%;
+  height: 51.2mm; /* f + 14 combined */
+}
+
+.w2-right-section {
+  flex: 0 0 45.4%;
   display: flex;
   flex-direction: column;
+}
+
+.w2-box-12-13-container {
+  display: flex;
+  height: 30.2mm;
 }
 
 .w2-box-12 {
   flex: 1;
-  border-bottom: 1px solid #000;
-  padding: 1.5mm 2mm;
-}
-
-.w2-box-12-codes {
-  margin-top: 1mm;
+  border-right: 0.5px solid #000;
+  padding: 1.5mm 0.5mm;
   display: flex;
   flex-direction: column;
-  gap: 1mm;
+  gap: 0;
 }
 
-.w2-box-12-code-row {
+.w2-box-12-row {
   display: flex;
   align-items: center;
-  gap: 2mm;
-  font-size: 9px;
+  gap: 1mm;
+  height: 8.4mm;
+  border-bottom: 0.5px solid #000;
+  padding: 0 1mm;
 }
 
-.w2-code-letter {
+.w2-box-12-row:last-child {
+  border-bottom: none;
+}
+
+.w2-code-label {
+  font-size: 7px;
   font-weight: bold;
-  width: 3mm;
+  width: 8mm;
 }
 
-.w2-code-box {
-  font-weight: bold;
-  border: 1px solid #000;
-  padding: 0.5mm 1.5mm;
-  min-width: 6mm;
-  text-align: center;
+.w2-code-vertical {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 4px;
+  height: 6mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.w2-code-amount {
+.w2-code-val {
+  font-size: 8px;
+  min-width: 8mm;
+}
+
+.w2-code-amt {
+  font-size: 8px;
   flex: 1;
-  font-weight: normal;
 }
 
 .w2-box-13 {
+  flex: 1;
   padding: 1.5mm 2mm;
-  border-bottom: none;
-}
-
-.w2-box-13-checks {
   display: flex;
-  gap: 3mm;
-  margin-top: 1mm;
-}
-
-.w2-box-13-checks label {
-  display: flex;
-  align-items: flex-start;
-  gap: 1mm;
-  font-size: 6px;
-  font-weight: bold;
-  line-height: 1.2;
-  cursor: pointer;
-}
-
-.w2-box-13-checks input[type="checkbox"] {
-  width: 3mm;
-  height: 3mm;
-  margin-top: 0.5mm;
-  flex-shrink: 0;
-}
-
-/* Box 14 - Other */
-.w2-box-14 {
-  min-height: 15mm;
-  border-bottom: 1px solid #000;
-}
-
-/* State and Local Information Row */
-.w2-state-local-row {
-  display: flex;
-  border-bottom: none;
-}
-
-.w2-state-local-row .w2-box {
-  border-right: 1px solid #000;
-  border-bottom: none;
-  min-height: 10mm;
-}
-
-.w2-state-local-row .w2-box:last-child {
+  flex-direction: column;
   border-right: none;
 }
 
+.w2-checkboxes {
+  display: flex;
+  flex-direction: row;
+  gap: 2mm;
+  margin-top: 2mm;
+  justify-content: space-around;
+}
+
+.w2-checkboxes label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1mm;
+  font-size: 5px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.w2-checkbox-text {
+  line-height: 1.1;
+}
+
+.w2-checkboxes input[type="checkbox"] {
+  width: 3.5mm;
+  height: 3.5mm;
+  margin: 0;
+  border: 1px solid #000;
+}
+
+/* Box 14 in right section (21mm height) */
+.w2-box-14 {
+  height: 21mm;
+  padding: 1.5mm 2mm;
+  border-top: 0.5px solid #000;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Row 10: State/Local boxes (proportions from SVG) */
+.w2-row-10 {
+  height: 17mm;
+}
+
 .w2-box-15 {
-  flex: 0 0 8%;
+  flex: 0 0 5.4%;
 }
 
 .w2-box-15b {
-  flex: 0 0 18%;
+  flex: 0 0 24%;
 }
 
 .w2-box-16 {
-  flex: 0 0 18%;
+  flex: 0 0 16%;
 }
 
 .w2-box-17 {
-  flex: 0 0 14%;
+  flex: 0 0 14.7%;
 }
 
 .w2-box-18 {
-  flex: 0 0 18%;
+  flex: 0 0 16%;
 }
 
 .w2-box-19 {
-  flex: 0 0 12%;
+  flex: 0 0 14.7%;
 }
 
 .w2-box-20 {
@@ -357,24 +349,38 @@
 
 /* Footer */
 .w2-footer {
-  border-top: 2px solid #000;
-  padding: 1.5mm 2mm;
-  background: #f9f9f9;
-  font-size: 6px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  padding: 2mm 3mm;
+  border-top: 1px solid #000;
+  font-size: 7px;
+  gap: 3mm;
 }
 
 .w2-footer-left {
-  font-weight: normal;
+  flex: 1;
 }
 
-.w2-footer-left strong {
+.w2-footer-year {
+  font-size: 24px;
   font-weight: bold;
+  letter-spacing: 2mm;
 }
 
-/* Print Styles */
+.w2-footer-right {
+  flex: 1;
+  text-align: right;
+}
+
+.w2-copy {
+  padding: 2mm 3mm;
+  font-size: 8px;
+  font-weight: bold;
+  border-top: 0.5px solid #000;
+}
+
+/* Print styles */
 @media print {
   .w2-report {
     background: white;
@@ -382,9 +388,9 @@
 
   .w2-page {
     width: 210mm;
-    min-height: 297mm;
+    height: 297mm;
     margin: 0;
-    padding: 20mm;
+    padding: 10mm;
     box-shadow: none;
     page-break-after: always;
   }
@@ -397,7 +403,6 @@
     page-break-inside: avoid;
   }
 
-  /* Ensure borders print properly */
   * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;

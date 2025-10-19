@@ -28,7 +28,7 @@ import VisitReportDocument from './reports/visitReport/VisitReportDocument';
 import MedicationHistoryDocument from './reports/medicationHistory/MedicationHistoryDocument';
 import LaboratoryReportDocument from './reports/labReport/LabReportDocument';
 import PassportDocument from './reports/passport/PassportDocument';
-import W2Form from './reports/w2/W2Form';
+import W2Form from './reports/w2/W2Form.tsx';
 import {
   VisitReport,
   LabReport,

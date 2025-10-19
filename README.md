@@ -381,6 +381,23 @@ npm run test:ai:mock
 - **Data Privacy**: All medical data is generated synthetically and is not real
 - **HIPAA Compliance**: This is a demonstration tool and should not be used with real patient data
 
+## Improvement and Feature Planning
+
+We have comprehensive planning documents to guide the future development of this application:
+
+- **[PLANNING_SUMMARY.md](./PLANNING_SUMMARY.md)** - Overview of all planning documents and how to use them
+- **[IMPROVEMENT_PLAN.md](./IMPROVEMENT_PLAN.md)** - Comprehensive feature and improvement plan covering short-term, medium-term, and long-term goals
+- **[QUICK_WINS.md](./QUICK_WINS.md)** - 16 high-impact improvements that can be implemented quickly (1-5 days each)
+- **[ROADMAP.md](./ROADMAP.md)** - Phased implementation timeline with quarterly milestones and KPIs
+
+These documents provide detailed guidance on:
+- Performance optimization strategies
+- New features and document types
+- Testing and quality improvements
+- Enterprise and security features
+- Resource and budget planning
+- Success metrics and KPIs
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit issues, fork the repository, and create pull requests for:
@@ -389,6 +406,12 @@ Contributions are welcome! Please feel free to submit issues, fork the repositor
 - UI/UX improvements
 - Bug fixes and optimizations
 - Documentation enhancements
+
+**Getting Started:**
+1. Review [PLANNING_SUMMARY.md](./PLANNING_SUMMARY.md) for an overview
+2. Check [QUICK_WINS.md](./QUICK_WINS.md) for beginner-friendly tasks
+3. Use the GitHub issue templates to report bugs or suggest features
+4. Review the [Pull Request Template](./.github/PULL_REQUEST_TEMPLATE.md) before submitting
 
 ---
 
